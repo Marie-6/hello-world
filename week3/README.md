@@ -1,3 +1,4 @@
+[▶ Play online](https://marie-6.github.io/hello-world/week3/FirstCase/)
 First Case — a horror detective logic game：
 A rainy night. An anonymous call. A body hidden in the trunk of a car.
 Explore Harlow House, collect clues, and find out **who the victim is** and **who the killer is**.
