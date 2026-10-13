@@ -1,13 +1,46 @@
-// Visual Animal — a little dachshund 🐶
+// Visual Animal — a pixel dachshund
 // Move the mouse: it walks after you
 // Hover on its head: it gets happy
 // Click: it jumps and barks
 
-// colors
-let FUR, FUR_DARK, CREAM, NOSE, PINK, COLLAR, GOLD;
+// sprite grid size (in art pixels)
+const W = 41;
+const H = 16;
+
+// palette: one character = one color
+const PALETTE = {
+  o: "#5b3527", // outline
+  b: "#d97757", // fur
+  d: "#a9533a", // dark fur
+  c: "#f5d3b3", // cream
+  k: "#2a1a14", // eye / nose
+  w: "#ffffff", // highlight
+  p: "#f28b9b", // pink
+  r: "#e0475b", // collar
+  y: "#f5c542", // tag
+};
+
+const HEART = [
+  ".pp.pp.",
+  "ppppppp",
+  "ppppppp",
+  ".ppppp.",
+  "..ppp..",
+  "...p...",
+];
+
+const CLOUD = [
+  "....wwww......",
+  "..wwwwwwww.ww.",
+  ".wwwwwwwwwwwww",
+  "wwwwwwwwwwwwww",
+];
+
+let P; // size of one art pixel on screen
 
 // dog state
 let dogX;
+let targetX;
 let dir = 1; // 1 = facing right, -1 = facing left
 let vx = 0;
 let walkPhase = 0;
@@ -16,81 +49,70 @@ let vy = 0;
 let barkTimer = 0;
 let blinkTimer = 0;
 let happy = false;
-let targetX;
 
 let hearts = [];
 let clouds = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-
-  FUR = color(196, 120, 64);
-  FUR_DARK = color(150, 85, 42);
-  CREAM = color(245, 214, 170);
-  NOSE = color(60, 40, 35);
-  PINK = color(255, 140, 160);
-  COLLAR = color(230, 70, 90);
-  GOLD = color(250, 200, 70);
-
+  noSmooth();
+  P = pixelSize();
   dogX = width / 2;
   targetX = width / 2;
-
-  for (let i = 0; i < 5; i++) {
-    clouds.push({ x: random(width), y: random(40, height * 0.35), s: random(0.6, 1.3) });
+  for (let i = 0; i < 4; i++) {
+    clouds.push({ x: random(width), y: random(height * 0.08, height * 0.4), v: random(0.15, 0.4) });
   }
 }
 
 function draw() {
-  let s = dogScale();
-  let groundY = height * 0.72;
+  let groundY = snap(height * 0.72);
 
   drawBackground(groundY);
 
-  // ---- movement: walk toward the mouse ----
+  // ---- walk toward the mouse ----
   let dx = targetX - dogX;
   let desired = constrain(dx * 0.05, -4, 4);
-  if (abs(dx) < 30 * s) desired = 0;
+  if (abs(dx) < P * 4) desired = 0;
   vx = lerp(vx, desired, 0.1);
   dogX += vx;
   if (vx > 0.3) dir = 1;
   if (vx < -0.3) dir = -1;
   let walking = abs(vx) > 0.4;
-  walkPhase += abs(vx) * 0.09;
+  walkPhase += abs(vx) * 0.06;
 
-  // ---- jump physics ----
-  vy += 0.8;
+  // ---- jump ----
+  vy += 0.15 * P;
   jumpY += vy;
   if (jumpY > 0) {
     jumpY = 0;
     vy = 0;
   }
 
-  // ---- happy when the mouse is near its head ----
-  let headX = dogX + dir * 128 * s;
-  let headY = groundY - 62 * s + jumpY - 45 * s;
-  happy = dist(mouseX, mouseY, headX, headY) < 70 * s || barkTimer > 0;
-
   // ---- blink ----
   blinkTimer--;
-  if (blinkTimer < -random(120, 260)) blinkTimer = 7;
+  if (blinkTimer < -random(120, 260)) blinkTimer = 8;
 
-  // shadow (shrinks while jumping)
-  let shadowW = map(jumpY, -150 * s, 0, 120, 260) * s;
+  // sprite top-left corner on screen (snapped so pixels stay crisp)
+  let bob = walking && floor(walkPhase) % 2 === 1 ? -P : 0;
+  let left = snap(dogX - (W * P) / 2);
+  let top = snap(groundY - (H - 1) * P + jumpY) + bob;
+
+  // ---- happy when the mouse is near its head ----
+  let head = toScreen(31, 5, left, top);
+  happy = dist(mouseX, mouseY, head.x, head.y) < P * 7 || barkTimer > 0;
+
+  // shadow
+  let shadowW = jumpY < 0 ? 22 : 30;
   noStroke();
-  fill(0, 0, 0, 30);
-  ellipse(dogX + dir * 20 * s, groundY + 4 * s, shadowW, 22 * s);
+  fill(0, 0, 0, 35);
+  rect(snap(dogX - (shadowW * P) / 2), groundY + P, shadowW * P, P);
 
   // the dog
-  let bob = walking ? sin(walkPhase * 2) * 2.5 * s : 0;
-  push();
-  translate(dogX, groundY - 62 * s + jumpY + bob);
-  scale(dir * s, s);
-  drawDog(walking);
-  pop();
+  drawGrid(buildDog(walking), left, top);
 
   // bark bubble
   if (barkTimer > 0) {
-    drawBark(headX + dir * 70 * s, headY - 70 * s, s);
+    drawBark(head.x + dir * P * 6, head.y - P * 9);
     barkTimer--;
   }
 
@@ -99,206 +121,208 @@ function draw() {
 }
 
 // ------------------------------------------------------------
-// The dog is drawn facing right, centered at (0, 0).
-// Body is ~240 wide, paws touch y = 62.
+// Build the dog sprite into a char grid, facing right.
 // ------------------------------------------------------------
-function drawDog(walking) {
-  let t = frameCount;
-  let swing = walking ? sin(walkPhase) * 0.5 : 0;
-  let breathe = walking ? 0 : sin(t * 0.05) * 1.5;
-  let wagSpeed = happy ? 0.6 : 0.2;
-  let wag = sin(t * wagSpeed) * (happy ? 0.55 : 0.3);
+function buildDog(walking) {
+  let g = [];
+  for (let y = 0; y < H; y++) g.push(new Array(W).fill("."));
 
-  noStroke();
+  let step = walking ? (floor(walkPhase) % 2 === 0 ? 1 : -1) : 0;
+  let wagSpeed = happy ? 4 : 10;
+  let tailFrame = [0, 1, 2, 1][floor(frameCount / wagSpeed) % 4];
 
-  // far legs (darker, behind body)
-  fill(FUR_DARK);
-  drawLeg(-70, -swing);
-  drawLeg(80, swing);
+  // far legs (darker)
+  leg(g, 8 - step, "d");
+  leg(g, 23 + step, "d");
 
   // tail
-  push();
-  translate(-112, -18);
-  rotate(-0.9 + wag);
-  fill(FUR);
-  rectMode(CENTER);
-  rect(0, -24, 13, 50, 7);
-  pop();
+  let tails = [
+    [[5, 8], [4, 7], [3, 6], [2, 5]],
+    [[5, 8], [4, 7], [4, 6], [4, 5]],
+    [[5, 8], [5, 7], [5, 6], [6, 5]],
+  ];
+  for (let [x, y] of tails[tailFrame]) g[y][x] = "b";
 
   // long sausage body
-  fill(FUR);
-  rectMode(CENTER);
-  rect(0, 0, 240, 72 + breathe, 36);
-
-  // back spot
-  fill(FUR_DARK);
-  ellipse(-30, -22, 70, 22);
-
-  // chest patch
-  fill(CREAM);
-  ellipse(100, 12, 46, 46);
+  fillRect(g, 6, 7, 24, 5, "b");
+  g[7][6] = ".";
+  g[11][6] = ".";
+  fillRect(g, 12, 7, 5, 1, "d"); // back spot
+  fillRect(g, 13, 8, 3, 1, "d");
+  fillRect(g, 24, 9, 4, 3, "c"); // chest
 
   // near legs
-  fill(FUR);
-  drawLeg(-90, swing);
-  drawLeg(60, -swing);
+  leg(g, 11 + step, "b");
+  leg(g, 26 - step, "b");
 
-  // neck
-  fill(FUR);
-  ellipse(105, -22, 62, 66);
+  // head + neck
+  fillRect(g, 27, 2, 9, 7, "b");
+  fillRect(g, 26, 6, 3, 4, "b");
+  g[2][27] = ".";
+  g[2][35] = ".";
 
   // collar + tag
-  push();
-  translate(94, -16);
-  rotate(-0.28);
-  fill(COLLAR);
-  rect(0, 0, 14, 66, 7);
-  fill(GOLD);
-  circle(4, 34, 15);
-  fill(255, 255, 255, 150);
-  circle(1, 31, 5);
-  pop();
+  fillRect(g, 27, 7, 1, 3, "r");
+  fillRect(g, 28, 9, 1, 1, "r");
+  g[10][28] = "y";
 
-  drawHead(t);
-}
-
-function drawLeg(x, angle) {
-  push();
-  translate(x, 18);
-  rotate(angle);
-  rectMode(CORNER);
-  rect(-9, 0, 18, 40, 9);
-  // paw
-  ellipse(3, 40, 26, 14);
-  pop();
-}
-
-function drawHead(t) {
-  let tilt = happy ? sin(t * 0.15) * 0.06 : 0;
-
-  push();
-  translate(128, -45);
-  rotate(tilt);
-
-  // head
-  fill(FUR);
-  ellipse(0, 0, 90, 82);
-
-  // snout
-  fill(CREAM);
-  ellipse(42, 14, 66, 44);
-
-  // nose
-  fill(NOSE);
-  ellipse(72, 6, 20, 15);
-  fill(255, 255, 255, 160);
-  ellipse(69, 3, 6, 4);
-
-  // mouth
-  noFill();
-  stroke(NOSE);
-  strokeWeight(2.5);
-  arc(56, 24, 18, 12, 0, PI);
-  arc(40, 24, 18, 12, 0, PI);
-  noStroke();
+  // snout + nose
+  fillRect(g, 34, 5, 5, 3, "c");
+  g[7][38] = ".";
+  fillRect(g, 37, 4, 2, 2, "k");
+  g[4][37] = "w";
 
   // tongue
-  if (happy) {
-    fill(PINK);
-    ellipse(48, 36, 16, 20);
-    stroke(220, 100, 120);
-    strokeWeight(1.5);
-    line(48, 30, 48, 42);
-    noStroke();
-  }
+  if (happy) fillRect(g, 36, 8, 2, 2, "p");
 
   // eye
   if (happy) {
-    // ^ ^ happy eye
-    noFill();
-    stroke(NOSE);
-    strokeWeight(3.5);
-    arc(14, -10, 18, 16, PI + 0.3, TWO_PI - 0.3);
-    noStroke();
+    g[4][31] = "k"; // ^ ^
+    g[3][32] = "k";
+    g[4][33] = "k";
   } else if (blinkTimer > 0) {
-    stroke(NOSE);
-    strokeWeight(3.5);
-    line(6, -10, 22, -10);
-    noStroke();
+    fillRect(g, 32, 4, 2, 1, "k");
   } else {
-    fill(NOSE);
-    ellipse(14, -10, 17, 20);
-    fill(255);
-    circle(18, -15, 6);
-    circle(11, -6, 3);
+    fillRect(g, 32, 3, 2, 2, "k");
+    g[3][33] = "w";
   }
 
   // blush
-  fill(255, 130, 150, 110);
-  ellipse(16, 12, 20, 11);
+  g[6][33] = "p";
 
-  // floppy ear
-  let earSwing = sin(t * 0.08) * 0.08 + (jumpY < 0 ? -0.5 : 0);
-  push();
-  translate(-18, -26);
-  rotate(0.35 + earSwing);
-  fill(FUR_DARK);
-  ellipse(0, 34, 36, 76);
-  pop();
+  // floppy ear (flips up while jumping)
+  if (jumpY < 0) {
+    fillRect(g, 25, 1, 3, 2, "d");
+    fillRect(g, 28, 2, 2, 2, "d");
+  } else {
+    fillRect(g, 28, 3, 3, 5, "d");
+    g[8][29] = "d";
+  }
 
-  pop();
+  addOutline(g);
+  return g;
+}
+
+function leg(g, x, col) {
+  fillRect(g, x, 12, 2, 2, col);
+  fillRect(g, x, 14, 3, 1, col); // paw
+}
+
+function fillRect(g, x, y, w, h, ch) {
+  for (let j = y; j < y + h; j++) {
+    for (let i = x; i < x + w; i++) {
+      if (j >= 0 && j < H && i >= 0 && i < W) g[j][i] = ch;
+    }
+  }
+}
+
+// every empty cell touching a colored cell becomes outline
+function addOutline(g) {
+  let marks = [];
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (g[y][x] !== ".") continue;
+      let near =
+        (y > 0 && g[y - 1][x] !== ".") ||
+        (y < H - 1 && g[y + 1][x] !== ".") ||
+        (x > 0 && g[y][x - 1] !== ".") ||
+        (x < W - 1 && g[y][x + 1] !== ".");
+      if (near) marks.push([x, y]);
+    }
+  }
+  for (let [x, y] of marks) g[y][x] = "o";
+}
+
+// draw a char grid, mirrored when the dog faces left
+function drawGrid(g, left, top) {
+  noStroke();
+  for (let y = 0; y < g.length; y++) {
+    for (let x = 0; x < g[y].length; x++) {
+      let ch = g[y][x];
+      if (ch === ".") continue;
+      let gx = dir === 1 ? x : g[y].length - 1 - x;
+      fill(PALETTE[ch]);
+      rect(left + gx * P, top + y * P, P, P);
+    }
+  }
+}
+
+function toScreen(gx, gy, left, top) {
+  let x = dir === 1 ? gx : W - 1 - gx;
+  return { x: left + x * P + P / 2, y: top + gy * P + P / 2 };
 }
 
 // ------------------------------------------------------------
 
 function drawBackground(groundY) {
-  background(255, 240, 225);
-
-  // sun
+  background("#f4ede3");
   noStroke();
-  fill(255, 220, 140);
-  circle(width * 0.85, height * 0.18, 90);
+
+  // pixel sun
+  let sx = snap(width * 0.82);
+  let sy = snap(height * 0.15);
+  fill("#f8cf7a");
+  for (let y = -4; y <= 4; y++) {
+    for (let x = -4; x <= 4; x++) {
+      if (x * x + y * y <= 18) rect(sx + x * P, sy + y * P, P, P);
+    }
+  }
 
   // clouds
-  fill(255);
   for (let c of clouds) {
-    c.x += 0.2 * c.s;
-    if (c.x > width + 100) c.x = -100;
-    ellipse(c.x, c.y, 90 * c.s, 40 * c.s);
-    ellipse(c.x + 30 * c.s, c.y - 12 * c.s, 60 * c.s, 40 * c.s);
-    ellipse(c.x - 25 * c.s, c.y - 8 * c.s, 50 * c.s, 32 * c.s);
+    c.x += c.v;
+    if (c.x > width + 20 * P) c.x = -20 * P;
+    drawSprite(CLOUD, snap(c.x), snap(c.y), { w: "#ffffff" });
   }
 
   // grass
-  fill(190, 225, 170);
-  rect(0, groundY - 6, width, height - groundY + 6);
-  fill(170, 210, 150);
-  for (let x = 0; x < width; x += 40) {
-    ellipse(x + 10, groundY + 30 + (x % 80 === 0 ? 20 : 0), 30, 8);
+  fill("#bcd6a0");
+  rect(0, groundY + P, width, height - groundY);
+  fill("#a5c487");
+  rect(0, groundY + P, width, P);
+  for (let x = 0; x < width; x += P * 6) {
+    let off = (x / (P * 6)) % 2 === 0 ? 3 : 6;
+    rect(snap(x), groundY + off * P, P * 2, P);
   }
 }
 
-function drawBark(x, y, s) {
-  push();
-  translate(x, y);
-  let pop1 = 1 + sin(barkTimer * 0.4) * 0.05;
-  scale(s * pop1);
-  noStroke();
-  fill(255);
-  ellipse(0, 0, 110, 70);
-  triangle(-30 * dir, 20, -10 * dir, 28, -45 * dir, 50);
-  fill(NOSE);
-  textAlign(CENTER, CENTER);
-  textSize(30);
-  textStyle(BOLD);
-  text("汪!", 0, 0);
-  pop();
+function drawSprite(rows, left, top, colors) {
+  for (let y = 0; y < rows.length; y++) {
+    for (let x = 0; x < rows[y].length; x++) {
+      let ch = rows[y][x];
+      if (ch === ".") continue;
+      fill(colors[ch]);
+      rect(left + x * P, top + y * P, P, P);
+    }
+  }
 }
 
-function drawHeart(x, y, r) {
-  circle(x - r / 2, y, r);
-  circle(x + r / 2, y, r);
-  triangle(x - r, y + r * 0.15, x + r, y + r * 0.15, x, y + r * 1.15);
+function drawBark(x, y) {
+  let bw = P * 16;
+  let bh = P * 7;
+  let left = snap(x - bw / 2);
+  let top = snap(y - bh / 2);
+
+  noStroke();
+  fill(PALETTE.o);
+  rect(left - P, top, bw + 2 * P, bh);
+  rect(left, top - P, bw, bh + 2 * P);
+  fill(255);
+  rect(left, top, bw, bh);
+
+  // little tail of the bubble, pointing back at the dog
+  let tx = dir === 1 ? left + P * 2 : left + bw - P * 3;
+  fill(PALETTE.o);
+  rect(tx - P, top + bh, P * 3, P * 2);
+  rect(tx - dir * P, top + bh + P * 2, P, P);
+  fill(255);
+  rect(tx, top + bh - P, P, P * 2);
+
+  fill(PALETTE.o);
+  textFont("Press Start 2P");
+  textAlign(CENTER, CENTER);
+  textSize(P * 2.4);
+  text("WOOF!", left + bw / 2, top + bh / 2 + P * 0.3);
 }
 
 function updateHearts() {
@@ -307,27 +331,32 @@ function updateHearts() {
     let h = hearts[i];
     h.x += h.vx;
     h.y += h.vy;
-    h.life -= 1;
-    fill(255, 120, 150, map(h.life, 0, 60, 0, 255));
-    drawHeart(h.x, h.y, h.r);
+    h.life--;
+    if (h.life % 6 < 5 || h.life > 20) {
+      drawSprite(HEART, snap(h.x), snap(h.y), { p: PALETTE.p });
+    }
     if (h.life <= 0) hearts.splice(i, 1);
   }
 }
 
 function drawHint() {
-  fill(120, 90, 70, 160);
+  fill("#7a5a48");
   noStroke();
+  textFont("Press Start 2P");
   textAlign(CENTER, BOTTOM);
-  textStyle(NORMAL);
-  textSize(14);
-  text("移动鼠标让它跟着走 · 摸摸它的头 · 点击让它跳", width / 2, height - 16);
-}
-
-function dogScale() {
-  return constrain(min(width, height) / 480, 0.5, 1.6);
+  textSize(constrain(P * 1.4, 8, 14));
+  text("move to walk  ·  hover to pet  ·  click to jump", width / 2, height - 20);
 }
 
 // ------------------------------------------------------------
+
+function pixelSize() {
+  return max(3, floor(min(width, height) / 60));
+}
+
+function snap(v) {
+  return floor(v / P) * P;
+}
 
 function mouseMoved() {
   targetX = mouseX;
@@ -339,18 +368,17 @@ function mouseDragged() {
 
 function mousePressed() {
   targetX = mouseX;
-  let s = dogScale();
-  if (jumpY === 0) vy = -14 * s;
-  barkTimer = 45;
-  let headX = dogX + dir * 128 * s;
-  let headY = height * 0.72 - 107 * s;
-  for (let i = 0; i < 6; i++) {
+  if (jumpY === 0) vy = -2.2 * P;
+  barkTimer = 50;
+  let left = snap(dogX - (W * P) / 2);
+  let top = snap(height * 0.72 - (H - 1) * P);
+  let head = toScreen(31, 3, left, top);
+  for (let i = 0; i < 5; i++) {
     hearts.push({
-      x: headX + random(-30, 30) * s,
-      y: headY - 40 * s,
-      vx: random(-1, 1),
-      vy: random(-2.5, -1),
-      r: random(8, 14) * s,
+      x: head.x + random(-6, 6) * P,
+      y: head.y - P * 4,
+      vx: random(-0.8, 0.8),
+      vy: random(-2.2, -1),
       life: 60,
     });
   }
@@ -358,4 +386,6 @@ function mousePressed() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  noSmooth();
+  P = pixelSize();
 }
