@@ -2,6 +2,7 @@
 // Move the mouse: it walks after you
 // Hover on its head: it gets happy
 // Click: it jumps and barks
+// Click the sun / moon: switch between day and night
 
 // sprite grid size (in art pixels)
 const W = 41;
@@ -29,14 +30,21 @@ const HEART = [
   "...p...",
 ];
 
-const CLOUD = [
+const DAY_CLOUD = [
   "....wwww......",
   "..wwwwwwww.ww.",
   ".wwwwwwwwwwwww",
   "wwwwwwwwwwwwww",
 ];
 
+const NIGHT_CLOUD = [
+  "......wwww......",
+  "..wwwwwwwwwwww..",
+  "wwwwwwwwwwwwwwww",
+];
+
 let P; // size of one art pixel on screen
+let night = false;
 
 // dog state
 let dogX;
@@ -52,6 +60,7 @@ let happy = false;
 
 let hearts = [];
 let clouds = [];
+let stars = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -59,15 +68,28 @@ function setup() {
   P = pixelSize();
   dogX = width / 2;
   targetX = width / 2;
+  makeSky();
+}
+
+function makeSky() {
+  clouds = [];
+  stars = [];
   for (let i = 0; i < 4; i++) {
-    clouds.push({ x: random(width), y: random(height * 0.08, height * 0.4), v: random(0.15, 0.4) });
+    clouds.push({ x: random(width), y: random(height * 0.08, height * 0.45), v: random(0.15, 0.4) });
+  }
+  for (let i = 0; i < 14; i++) {
+    stars.push({ x: random(width), y: random(height * 0.05, height * 0.65), t: random(TWO_PI) });
   }
 }
 
 function draw() {
   let groundY = snap(height * 0.72);
 
-  drawBackground(groundY);
+  if (night) drawNight(groundY);
+  else drawDay(groundY);
+
+  // pointer cursor over the sun / moon
+  cursor(overSky() ? HAND : ARROW);
 
   // ---- walk toward the mouse ----
   let dx = targetX - dogX;
@@ -101,11 +123,13 @@ function draw() {
   let head = toScreen(31, 5, left, top);
   happy = dist(mouseX, mouseY, head.x, head.y) < P * 7 || barkTimer > 0;
 
-  // shadow
-  let shadowW = jumpY < 0 ? 22 : 30;
-  noStroke();
-  fill(0, 0, 0, 35);
-  rect(snap(dogX - (shadowW * P) / 2), groundY + P, shadowW * P, P);
+  // shadow (daytime only)
+  if (!night) {
+    let shadowW = jumpY < 0 ? 22 : 30;
+    noStroke();
+    fill(0, 0, 0, 35);
+    rect(snap(dogX - (shadowW * P) / 2), groundY + P, shadowW * P, P);
+  }
 
   // the dog
   drawGrid(buildDog(walking), left, top);
@@ -253,18 +277,28 @@ function toScreen(gx, gy, left, top) {
 }
 
 // ------------------------------------------------------------
+// Sky: the sun and the moon share one spot
+// ------------------------------------------------------------
 
-function drawBackground(groundY) {
+function skyPos() {
+  return { x: snap(width * 0.82), y: snap(height * 0.16) };
+}
+
+function overSky() {
+  let s = skyPos();
+  return dist(mouseX, mouseY, s.x, s.y) < P * 7;
+}
+
+function drawDay(groundY) {
   background("#f4ede3");
   noStroke();
 
   // pixel sun
-  let sx = snap(width * 0.82);
-  let sy = snap(height * 0.15);
+  let s = skyPos();
   fill("#f8cf7a");
   for (let y = -4; y <= 4; y++) {
     for (let x = -4; x <= 4; x++) {
-      if (x * x + y * y <= 18) rect(sx + x * P, sy + y * P, P, P);
+      if (x * x + y * y <= 18) rect(s.x + x * P, s.y + y * P, P, P);
     }
   }
 
@@ -272,7 +306,7 @@ function drawBackground(groundY) {
   for (let c of clouds) {
     c.x += c.v;
     if (c.x > width + 20 * P) c.x = -20 * P;
-    drawSprite(CLOUD, snap(c.x), snap(c.y), { w: "#ffffff" });
+    drawSprite(DAY_CLOUD, snap(c.x), snap(c.y), { w: "#ffffff" });
   }
 
   // grass
@@ -286,6 +320,45 @@ function drawBackground(groundY) {
   }
 }
 
+function drawNight(groundY) {
+  background("#2b303b");
+  noStroke();
+
+  // pixel moon
+  let s = skyPos();
+  fill("#e8e8e8");
+  for (let y = -5; y <= 5; y++) {
+    for (let x = -5; x <= 5; x++) {
+      let inMoon = x * x + y * y <= 26;
+      let inBite = (x - 3) * (x - 3) + (y + 1) * (y + 1) <= 20;
+      if (inMoon && !inBite) rect(s.x + x * P, s.y + y * P, P, P);
+    }
+  }
+
+  // clouds
+  for (let c of clouds) {
+    c.x += c.v * 0.6;
+    if (c.x > width + 20 * P) c.x = -20 * P;
+    drawSprite(NIGHT_CLOUD, snap(c.x), snap(c.y), { w: "#4a505c" });
+  }
+
+  // twinkling stars
+  textFont("Press Start 2P");
+  textAlign(CENTER, CENTER);
+  textSize(P * 2);
+  for (let st of stars) {
+    let a = 120 + 135 * sin(frameCount * 0.03 + st.t);
+    fill(255, a);
+    text("*", st.x, st.y);
+  }
+
+  // dotted ground line
+  fill("#d8d8d8");
+  for (let x = P; x < width; x += P * 2) {
+    rect(x, groundY + P, P * 0.6, P * 0.6);
+  }
+}
+
 function drawSprite(rows, left, top, colors) {
   for (let y = 0; y < rows.length; y++) {
     for (let x = 0; x < rows[y].length; x++) {
@@ -296,6 +369,8 @@ function drawSprite(rows, left, top, colors) {
     }
   }
 }
+
+// ------------------------------------------------------------
 
 function drawBark(x, y) {
   let bw = P * 16;
@@ -340,12 +415,15 @@ function updateHearts() {
 }
 
 function drawHint() {
-  fill("#7a5a48");
+  fill(night ? "#9aa0aa" : "#7a5a48");
   noStroke();
   textFont("Press Start 2P");
   textAlign(CENTER, BOTTOM);
-  textSize(constrain(P * 1.4, 8, 14));
-  text("move to walk  ·  hover to pet  ·  click to jump", width / 2, height - 20);
+  textSize(constrain(P * 1.3, 8, 14));
+  let sky = night ? "click the moon for day" : "click the sun for night";
+  let lh = constrain(P * 1.3, 8, 14) * 2;
+  text("move to walk  ·  hover to pet  ·  click to jump", width / 2, height - 20 - lh);
+  text(sky, width / 2, height - 20);
 }
 
 // ------------------------------------------------------------
@@ -367,6 +445,12 @@ function mouseDragged() {
 }
 
 function mousePressed() {
+  // clicking the sun / moon switches the time of day
+  if (overSky()) {
+    night = !night;
+    return;
+  }
+
   targetX = mouseX;
   if (jumpY === 0) vy = -2.2 * P;
   barkTimer = 50;
@@ -388,4 +472,5 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   noSmooth();
   P = pixelSize();
+  makeSky();
 }
