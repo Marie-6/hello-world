@@ -3,6 +3,7 @@ original pet to interact
 
 ▶️ [Play me](https://marie-6.github.io/hello-world/week5/creature/)
 more interesting creature to have!
+
 Concept
 
 A tiny pixel-art dachshund living on a little screen. Its long sausage
