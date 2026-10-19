@@ -1,0 +1,216 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #8fd3ff;
+}
+canvas {
+  display: block;
+}
+
+#hud, #namer, #tip, #resetBtn, #closet {
+  position: fixed;
+  font-family: "Press Start 2P", monospace;
+  color: #5a3d5c;
+}
+.hidden {
+  display: none !important;
+}
+
+/* stats panel */
+#hud {
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  pointer-events: none;
+}
+.panel, #namer {
+  background: #fffaf3;
+  border: 3px solid #5a3d5c;
+  box-shadow: 4px 4px 0 #5a3d5c;
+  padding: 10px 12px;
+}
+.name {
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+#petStage {
+  color: #f08aaa;
+  font-size: 8px;
+}
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 8px;
+  margin-top: 6px;
+}
+.stat span {
+  width: 52px;
+}
+.bar {
+  width: 96px;
+  height: 8px;
+  border: 2px solid #5a3d5c;
+  background: #f3e6ee;
+}
+.bar i {
+  display: block;
+  height: 100%;
+  width: 50%;
+  transition: width 0.3s steps(6);
+}
+#barFull { background: #ff9f43; }
+#barEnergy { background: #6fb8ff; }
+#barJoy { background: #ff8fab; }
+#barGrow { background: #7bc96f; }
+
+/* buttons */
+.buttons {
+  display: flex;
+  gap: 10px;
+  pointer-events: auto;
+}
+button {
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  color: #5a3d5c;
+  background: #ffe3ec;
+  border: 3px solid #5a3d5c;
+  box-shadow: 3px 3px 0 #5a3d5c;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+button:hover {
+  background: #ffc7d9;
+}
+button:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+/* naming box */
+#namer {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -110%);
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.4;
+  width: min(260px, calc(100vw - 60px));
+}
+#namer p {
+  margin: 4px 0 12px;
+}
+#namer input {
+  font-family: "Press Start 2P", monospace;
+  font-size: 11px;
+  color: #5a3d5c;
+  width: calc(100% - 24px);
+  padding: 8px;
+  border: 3px solid #5a3d5c;
+  background: #fff;
+  text-align: center;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+#tip {
+  bottom: 14px;
+  left: 16px;
+  right: 110px;
+  margin: 0;
+  font-size: 8px;
+  line-height: 1.6;
+  color: #3f6e3a;
+}
+#resetBtn {
+  bottom: 12px;
+  right: 16px;
+  font-size: 7px;
+  padding: 5px 6px;
+  box-shadow: 2px 2px 0 #5a3d5c;
+  opacity: 0.7;
+}
+
+/* closet: a little wooden wardrobe */
+#closet {
+  top: 76px;
+  right: 16px;
+  width: min(300px, calc(100vw - 32px));
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  background: #c98b5a;
+  border: 3px solid #5a3d5c;
+  box-shadow: 4px 4px 0 #5a3d5c;
+  padding: 10px;
+  color: #fffaf3;
+}
+.closet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+.closet-head button {
+  font-size: 8px;
+  padding: 4px 6px;
+  box-shadow: 2px 2px 0 #5a3d5c;
+}
+.shelf-label {
+  font-size: 8px;
+  margin: 12px 0 6px;
+}
+.shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: 6px;
+  background: #a8703f;
+  border: 3px solid #5a3d5c;
+  padding: 6px;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  background: #f6e3c8;
+  box-shadow: 2px 2px 0 #5a3d5c;
+  padding: 6px 2px;
+  font-size: 7px;
+  min-height: 92px;
+}
+.tile canvas {
+  image-rendering: pixelated;
+  max-width: 100%;
+}
+.tile.on {
+  background: #ffe3ec;
+  outline: 3px solid #ff6f9c;
+}
+.tile.locked canvas {
+  filter: brightness(0) opacity(0.25);
+}
+.tile.locked {
+  cursor: not-allowed;
+}
+
+@media (max-width: 520px) {
+  #closet {
+    top: auto;
+    bottom: 44px;
+    max-height: 55vh;
+  }
+  #hud {
+    flex-direction: column;
+  }
+  .bar {
+    width: 70px;
+  }
+}
