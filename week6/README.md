@@ -1,5 +1,7 @@
 # Week 6 — The Shadow Theater
 
+### [▶ Play me](https://marie-6.github.io/hello-world/week6/)
+
 A candle-lit paper screen. Step in front of your webcam and your body becomes a shadow puppet on the paper. Tiny hooded paper children wander the stage with lanterns. **Your shadow is solid to them**, so they climb onto it. Put your arm under one and lift it up; pull your arm away and it falls (and panics).
 
 - **Moths** circle the candle and scatter when your shadow touches them.
