@@ -4,6 +4,18 @@
 
 A one-button game. You are a New York pigeon trying to cross as many streets as you can without getting squashed. The pigeon walks on its own with a real pigeon head-bob: its head stays still in the air while the body catches up, then jerks forward.
 
+## Where it started
+
+I started from **road-crossing games** like *Frogger* and *Crossy Road*. In those, you press a button for every single step. Here the steps are automated, so one button is enough.
+
+## The automated control
+
+**Walking is automated.** The pigeon walks forward (to the right) by itself, with a head-bob. You never press anything to move. The only button, `SPACE`, decides *when* to stop and *when* to fly.
+
+## Win or lose
+
+There's no finish line. The streets go on forever, and **the game only ends when you lose**: after 3 hits, it's game over. Your score is how many streets you crossed, and the best score for each mode is saved. Press `SPACE` on the game over screen to play again.
+
 ## How to play
 
 | Input | Action |
@@ -29,7 +41,7 @@ On a phone, tap the screen instead of pressing Space.
 
 ## Neighborhoods
 
-12 neighborhoods, 4 streets each. Every game starts in **Midtown** and ends at **Coney Island**. The 10 in between are shuffled and never repeat in one game:
+12 neighborhoods, 4 streets each. Every game starts in **Midtown**, and **Coney Island** is the last stop (its streets keep going until you lose). The 10 in between are shuffled and never repeat in one game:
 
 | Neighborhood | What's special |
 |---|---|
@@ -57,5 +69,9 @@ On a phone, tap the screen instead of pressing Space.
 
 ```
 week7/
-└── index.html   (the whole game in one file)
+├── index.html   (page layout, styles, title and game over screens)
+├── sketch.js    (all the game code: input, traffic, pigeon, drawing, sound)
+└── README.md
+
+No images: everything is drawn with code.
 ```
