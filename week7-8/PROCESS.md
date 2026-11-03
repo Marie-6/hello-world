@@ -92,6 +92,12 @@ Before screenshots are from when I found each problem. After screenshots are fro
 |---|---|
 | <img src="images/before-cars-overlap.png" width="320" alt="Taxi and red car overlapping in one lane"> | <img src="images/after-cars-no-overlap.png" width="320" alt="Cars in separate spaces in each lane"> |
 
+**Car speed.** Before, lanes on the same street had similar speeds, so cars often drove side by side. Now each lane has a clearly different pace. Both clips are Medium mode: before is the version from just before this change ([commit 8a4995a](https://github.com/Marie-6/hello-world/tree/8a4995a/week7)), after is the current game.
+
+| Before | After |
+|---|---|
+| <img src="images/before-cars-same-speed.gif" width="320" alt="Clip: cars in neighbouring lanes moving at similar speeds"> | <img src="images/after-cars-own-speed.gif" width="320" alt="Clip: cars in each lane moving at different speeds"> |
+
 **Fountains.** Before, two fountains covered each other. Now decorations only go where there's space.
 
 | Before | After |
