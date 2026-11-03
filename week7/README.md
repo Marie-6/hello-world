@@ -2,7 +2,7 @@
 
 ### [▶ Play me](https://marie-6.github.io/hello-world/week7/)
 
-📓 **[Process record](PROCESS.md)**: the choices I made, what went wrong, and my prompts. 🔬 **[Probe: do cars overlap?](https://marie-6.github.io/hello-world/week7/probes/traffic-overlap.html)**
+📓 **[Process record](PROCESS.md)**: the choices I made, what went wrong, and my prompts. 💬 **[All prompts](PROMPTS.md)**: every prompt I wrote and what we did. 🔬 **[Probe: do cars overlap?](https://marie-6.github.io/hello-world/week7/probes/traffic-overlap.html)**
 
 A one-button game. You are a New York pigeon trying to cross as many streets as you can without getting squashed. The pigeon walks on its own with a real pigeon head-bob: its head stays still in the air while the body catches up, then jerks forward.
 
@@ -75,6 +75,7 @@ week7/
 ├── sketch.js    (all the game code: input, traffic, pigeon, drawing, sound)
 ├── README.md
 ├── PROCESS.md   (process record: my choices, what went wrong, prompts)
+├── PROMPTS.md   (every prompt, in order, and what we did)
 └── probes/
     └── traffic-overlap.html   (runs the old vs new car rule and counts overlaps)
 
