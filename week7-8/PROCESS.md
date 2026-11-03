@@ -134,7 +134,7 @@ I kept the Wings bar from this answer. Later I changed "tap to stop" to "press t
 
 - **Me:** the idea and every choice above. I found the problems by playing.
 - **AI (Claude):** wrote the code, explained why the bugs happened, and tested the fixes.
-- **Inspired by:** *Frogger*, *Crossy Road*, *Flappy Bird*. No code or images were copied.
+- **Inspired by:** *Crossy Road*, *Flappy Bird*. No code or images were copied.
 
 ## Next step
 
