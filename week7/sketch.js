@@ -110,6 +110,7 @@ function setLevel(k) {
   levelKey = k; LV = LEVELS[k];
   try { localStorage.setItem('pigeons-ny-level', k); } catch (e) {}
   document.querySelectorAll('.mode').forEach(b => b.classList.toggle('sel', b.dataset.level === k));
+  $('startLevel').textContent = LV.label;
 }
 
 let strips, crusts, parts, genX, roadNum, nextRoad, camX, score, crustCount, state, overT, worldT, lives = 3, shownLives = -1, nextLifeAt = 10, lifeStep = 10;
@@ -1226,8 +1227,11 @@ function frame(t) {
 
 document.querySelectorAll('.mode').forEach(b => {
   b.addEventListener('pointerdown', e => e.stopPropagation());
-  b.addEventListener('click', e => { e.stopPropagation(); audio(); setLevel(b.dataset.level); start(); });
+  // Picking a mode only selects it; the game begins with Start (or Space).
+  b.addEventListener('click', e => { e.stopPropagation(); audio(); setLevel(b.dataset.level); b.blur(); });
 });
+$('startBtn').addEventListener('pointerdown', e => e.stopPropagation());
+$('startBtn').addEventListener('click', e => { e.stopPropagation(); audio(); $('startBtn').blur(); start(); });
 $('changeMode').addEventListener('pointerdown', e => e.stopPropagation());
 $('changeMode').addEventListener('click', e => {
   e.stopPropagation();
