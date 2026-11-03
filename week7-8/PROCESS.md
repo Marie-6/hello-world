@@ -1,7 +1,7 @@
 # Process record: Pigeons in New York
 
 Route A: Remix, one decision deeper. I took my one-button game and kept improving it by playing it.
-Made with an AI assistant (Claude). [▶ Play](https://marie-6.github.io/hello-world/week7/) · [All prompts](PROMPTS.md) · [Probe](probes/traffic-overlap.html)
+Made with an AI assistant (Claude). [▶ Play](https://marie-6.github.io/hello-world/week7-8/) · [All prompts](PROMPTS.md) · [Probe](probes/traffic-overlap.html)
 
 ## What did I want to make stronger?
 

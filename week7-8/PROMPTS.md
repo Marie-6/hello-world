@@ -4,7 +4,7 @@ Every prompt I wrote to the AI (Claude), in order and copied exactly (typos incl
 
 ✅ = worked · ❌ = didn't work, tried again · 🔍 = only checked, nothing changed
 
-[▶ Play the game](https://marie-6.github.io/hello-world/week7/) · [Process record](PROCESS.md)
+[▶ Play the game](https://marie-6.github.io/hello-world/week7-8/) · [Process record](PROCESS.md)
 
 ---
 

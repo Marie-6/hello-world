@@ -1,8 +1,8 @@
 # Week 7 — Pigeons in New York
 
-### [▶ Play me](https://marie-6.github.io/hello-world/week7/)
+### [▶ Play me](https://marie-6.github.io/hello-world/week7-8/)
 
-📓 **[Process record](PROCESS.md)**: the choices I made, what went wrong, and my prompts. 💬 **[All prompts](PROMPTS.md)**: every prompt I wrote and what we did. 🔬 **[Probe: do cars overlap?](https://marie-6.github.io/hello-world/week7/probes/traffic-overlap.html)**
+📓 **[Process record](PROCESS.md)**: the choices I made, what went wrong, and my prompts. 💬 **[All prompts](PROMPTS.md)**: every prompt I wrote and what we did. 🔬 **[Probe: do cars overlap?](https://marie-6.github.io/hello-world/week7-8/probes/traffic-overlap.html)**
 
 A one-button game. You are a New York pigeon trying to cross as many streets as you can without getting squashed. The pigeon walks on its own with a real pigeon head-bob: its head stays still in the air while the body catches up, then jerks forward.
 
@@ -70,7 +70,7 @@ On a phone, tap the screen instead of pressing Space.
 ## Files
 
 ```
-week7/
+week7-8/
 ├── index.html   (page layout, styles, title and game over screens)
 ├── sketch.js    (all the game code: input, traffic, pigeon, drawing, sound)
 ├── README.md
