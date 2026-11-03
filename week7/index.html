@@ -36,11 +36,6 @@ canvas{display:block;width:100%;height:100%}
 .lives{display:flex;gap:3px;margin-top:3px}
 .lives svg{width:15px;height:22px;transition:opacity .3s}
 .lives svg.lost{opacity:.18}
-.lives svg.fresh{animation:featherfall .7s ease-in both}
-@keyframes featherfall{0%{opacity:1;transform:none}100%{opacity:.18;transform:translateY(10px) rotate(50deg)}}
-.chip.hit{animation:chiphit .6s ease-out}
-@keyframes chiphit{0%,100%{transform:none}15%{transform:translateX(-5px)}30%{transform:translateX(5px)}45%{transform:translateX(-3px)}60%{transform:translateX(2px)}}
-.chip.hurt .label{color:#ff6b57}
 .small{font-family:var(--display);font-size:16px;color:var(--paper);line-height:1.1;font-variant-numeric:tabular-nums}
 #mute{pointer-events:auto;font:700 11px var(--body);letter-spacing:.1em;text-transform:uppercase;background:var(--ink-soft);color:var(--paper);border:2px solid var(--steel);border-radius:6px;padding:8px 9px;cursor:pointer}
 #mute:focus-visible{outline:3px solid var(--cab);outline-offset:2px}
@@ -76,7 +71,7 @@ canvas{display:block;width:100%;height:100%}
 .mode:focus-visible,.link:focus-visible{outline:3px solid var(--cab);outline-offset:2px}
 .link{pointer-events:auto;align-self:center;background:none;border:2px solid var(--steel);color:var(--paper);font:700 12px var(--body);letter-spacing:.1em;text-transform:uppercase;border-radius:6px;padding:8px 14px;cursor:pointer}
 @keyframes pulse{50%{transform:scale(1.03)}}
-@media (prefers-reduced-motion:reduce){.go{animation:none}#banner{transition:none}.chip.hit,.lives svg.fresh{animation:none}}
+@media (prefers-reduced-motion:reduce){.go{animation:none}#banner{transition:none}}
 </style>
 </head>
 <body>
@@ -87,7 +82,7 @@ canvas{display:block;width:100%;height:100%}
   <div class="hud">
     <div class="right">
       <div class="chip"><span class="label" id="lvLabel">Streets</span><span class="big" id="score">0</span></div>
-      <div class="chip" id="livesChip"><span class="label" id="livesLabel">Lives</span><span class="lives" id="lives"></span></div>
+      <div class="chip"><span class="label">Lives</span><span class="lives" id="lives"></span></div>
     </div>
     <div class="right">
       <div class="chip"><span class="label">Wings</span><div class="wings" id="wings"><i id="wingbar"></i></div>
