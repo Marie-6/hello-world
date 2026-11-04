@@ -92,11 +92,13 @@ Before screenshots are from when I found each problem. After screenshots are fro
 |---|---|
 | <img src="images/before-cars-overlap.png" width="320" alt="Taxi and red car overlapping in one lane"> | <img src="images/after-cars-no-overlap.png" width="320" alt="Cars in separate spaces in each lane"> |
 
-**Car speed.** Before, lanes on the same street had similar speeds, so cars often drove side by side. Now each lane has a clearly different pace. Both clips are Medium mode: before is the version from just before this change ([commit 8a4995a](https://github.com/Marie-6/hello-world/tree/8a4995a/week7)), after is the current game.
+**Car speed.** Before, each lane picked a random speed between 85 and 135, so neighbouring lanes were often almost the same and cars drove side by side. Now the lanes on one street get 4 fixed paces (0.7×, 0.87×, 1.03×, 1.2×) in a shuffled order, so any 2 lanes differ by at least 15%.
+
+The number on each lane is its speed. The pink line is where each car was in the last second: a longer line means a faster car. Before: 122 / 122 and 112 / 117. After: 161 / 94 and 99 / 115. Both clips are Medium mode with the pigeon standing still. Before is the version from just before this change ([commit 8a4995a](https://github.com/Marie-6/hello-world/tree/8a4995a/week7)), after is the current game. The numbers and lines were added only for these clips, not to the game.
 
 | Before | After |
 |---|---|
-| <img src="images/before-cars-same-speed.gif" width="320" alt="Clip: cars in neighbouring lanes moving at similar speeds"> | <img src="images/after-cars-own-speed.gif" width="320" alt="Clip: cars in each lane moving at different speeds"> |
+| <img src="images/before-cars-same-speed.gif" width="320" alt="Clip: lane speeds 122, 122, 112, 117, pink trails all about the same length"> | <img src="images/after-cars-own-speed.gif" width="320" alt="Clip: lane speeds 161, 94, 99, 115, pink trails clearly different lengths"> |
 
 **Fountains.** Before, two fountains covered each other. Now decorations only go where there's space.
 
