@@ -66,6 +66,9 @@ I wanted to make it **fair and easy to start**:
 - The head-jerk walk makes a dangerous street feel funny instead of scary.
 - Real neighborhoods like Washington Square Park make it feel like New York, not just roads.
 - When the pigeon only blinked, it was hard to notice it got hit. A short stop makes it clear, without the big effect that felt like too much.
+- The pizza on the street is not made up. I took this photo in New York: pizza slices lying in the road, right next to a bus and a taxi. That's exactly the pigeon's world in the game.
+
+<img src="images/real-street-pizza.jpg" width="320" alt="Photo of real pizza slices lying in a New York street next to a bus, at night">
 
 ## What didn't work the first time
 
