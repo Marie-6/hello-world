@@ -2,7 +2,7 @@
 
 **What should I watch tonight?** Set your mood on a mixing desk, and the box office prints you **one ticket**: one movie or TV series, with its poster, a one-line description and how well it matches.
 
-[▶ Open the tool](https://marie-6.github.io/hello-world/week%208%20tool/) · [Process record with before/after pictures](PROCESS.md) · [All 65 prompts](PROMPTS.md) · [Full chat history](CHAT_HISTORY.md)
+[▶ Open the tool](https://marie-6.github.io/hello-world/week8-tool/) · [Process record with before/after pictures](PROCESS.md) · [All 66 prompts](PROMPTS.md) · [Full chat history](CHAT_HISTORY.md)
 
 <img src="images/after-whole-page.png" width="700">
 

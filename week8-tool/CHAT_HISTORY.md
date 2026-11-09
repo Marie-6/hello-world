@@ -1936,3 +1936,12 @@ Made "Marie" a locked owner profile: only the page owner, signed in on claude.ai
 <img src="images/chat/t64-after-1.png" width="560">
 
 ---
+### 66. Me · 10:41 AM
+
+> change the name to "week8-tool" and make sure it is below "week7"
+
+**Claude:**
+
+Renamed the folder from "week 8 tool" to `week8-tool` and updated the links in the README, process record and prompts. GitHub sorts folders by name, so `week8-tool` now comes right after `week7-8`.
+
+---

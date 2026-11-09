@@ -4,7 +4,7 @@ Every prompt I wrote to the AI (Claude, in Claude Code), in order and copied exa
 
 ✅ = worked · ❌ = didn't work or I changed my mind, tried again · 🔍 = only a question or a check, nothing changed
 
-[▶ Open the tool](https://marie-6.github.io/hello-world/week%208%20tool/) · [Process record](PROCESS.md) · [Full chat history with screenshots](CHAT_HISTORY.md)
+[▶ Open the tool](https://marie-6.github.io/hello-world/week8-tool/) · [Process record](PROCESS.md) · [Full chat history with screenshots](CHAT_HISTORY.md)
 
 ---
 
@@ -346,3 +346,7 @@ Every prompt I wrote to the AI (Claude, in Claude Code), in order and copied exa
 > okay, and make sure "marie" is only i can edit. others should add new user. push it to github "hello-world" "week 8 tool" and output all the chat history (incuding prompts,and designing process) make sure the process has pictures of "before" and "after"
 
 ✅ "Marie" is the owner's profile; others add their own name. Then this GitHub folder.
+**66.**
+> change the name to "week8-tool" and make sure it is below "week7"
+
+✅ Renamed the folder to `week8-tool`, so it sits right after `week7-8` on GitHub.
