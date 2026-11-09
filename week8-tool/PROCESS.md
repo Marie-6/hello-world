@@ -64,7 +64,7 @@ In "My list" a title was only a line of text. I asked for the ticket to pop up a
 
 ### 4. A short header
 
-The header had three lines of small grey text explaining the tool. 
+The header had three lines of small grey text explaining the tool. Too big gap on the right side. Changed that into one sentence.
 
 <table><tr><th>Before</th><th>Step</th></tr><tr>
 <td><img src="images/before-header-description.png" width="380"></td>
