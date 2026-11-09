@@ -354,4 +354,9 @@ Every prompt I wrote to the AI (Claude, in Claude Code), in order and copied exa
 **67.**
 > https://claude.ai/artifact/U2nC1QNttQsWTSRA2kH8jq and this is the first version
 
-✅ Added the first version, *Tonight's Feature*, as "Version 0": a playable copy in `first-version/`, screenshots of its 4 steps, and a first-vs-final comparison in the process record.
+✅ Added screenshots of the first version, *Tonight's Feature*, to the process record.
+
+**68.**
+> you dont need to ad"version 0" you can just post the version0 photos in the process file
+
+✅ Removed the "Version 0" section and the playable copy; the process record now just shows the first version's 4 screenshots.

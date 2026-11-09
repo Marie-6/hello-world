@@ -1951,6 +1951,15 @@ Renamed the folder from "week 8 tool" to `week8-tool` and updated the links in t
 
 **Claude:**
 
-That's *Tonight's Feature*, the first try, made in a different chat (it isn't in this conversation's log). I added it to the GitHub folder as "Version 0": a playable copy in `first-version/`, screenshots of its 4 steps (occasion → mood → taste check → lineup), and a first-vs-final comparison at the top of the process record. Its last step has a bug (two names used but never defined), so "Your lineup" crashes and never shows a ticket. I kept it exactly as it was.
+That's *Tonight's Feature*, the first try, made in a different chat. I added screenshots of its 4 steps (occasion → mood → taste check → lineup) to the top of the process record.
+
+---
+### 68. Me · 10:49 AM
+
+> you dont need to ad"version 0" you can just post the version0 photos in the process file
+
+**Claude:**
+
+Removed the "Version 0" section, the playable `first-version/` copy and its links. The process record now opens with a short "Where it started" part that just shows the 4 screenshots of *Tonight's Feature*.
 
 ---

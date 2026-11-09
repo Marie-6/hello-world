@@ -1,39 +1,23 @@
 # Process record: Late Show Box Office
 
 A tool that picks a movie or TV series for tonight. You set your mood, and it prints a cinema ticket.
-Made with an AI assistant (Claude, in Claude Code) over one week (Nov 3–9, 2026), in 67 prompts, after a first try called *Tonight's Feature*.
+Made with an AI assistant (Claude, in Claude Code) over one week (Nov 3–9, 2026), in 68 prompts.
 [▶ Open the tool](https://marie-6.github.io/hello-world/week8-tool/) · [All prompts](PROMPTS.md) · [Full chat history](CHAT_HISTORY.md)
 
 **How to read the pictures:** "Before" is the screenshot I sent to the AI when I saw a problem. "After" is the same part of the finished tool. My screenshots are in dark mode, so the "after" pictures are too. A few "step" pictures show ideas we tried and then changed.
 
 <img src="images/after-whole-page.png" width="700">
 
-## Version 0: "Tonight's Feature"
+## Where it started
 
-[▶ Open the first version](https://marie-6.github.io/hello-world/week8-tool/first-version/) (kept exactly as it was, bug included)
-
-Before Late Show Box Office there was a first try called **Tonight's Feature**. It worked like a form in 4 steps: pick an **occasion** (lunch break, date night, friends…), set the **mood** (film or series, how much time, how heavy), do a **taste check** (answer 13 genre questions one by one), then see **your lineup**. It had 139 titles and no posters.
+My first try was called *Tonight's Feature*: a form in 4 steps, with up to 13 genre questions before you saw anything, and the last step never showed a pick.
 
 <table><tr><th>1 · Occasion</th><th>2 · Mood</th></tr><tr>
 <td><img src="images/v0-occasion.png" width="380"></td>
 <td><img src="images/v0-setup.png" width="380"></td></tr>
-<tr><th>3 · Taste check (13 questions)</th><th>4 · Your lineup: empty</th></tr><tr>
+<tr><th>3 · Taste check</th><th>4 · Your lineup</th></tr><tr>
 <td><img src="images/v0-taste.png" width="380"></td>
 <td><img src="images/v0-results.png" width="380"></td></tr></table>
-
-**What was wrong with it:**
-
-- **Too many steps.** You had to answer up to 13 genre questions before seeing anything.
-- **The last step was broken.** The code used two names it never defined, so the page crashed before it could print the ticket. "Your lineup" stayed empty.
-- **No posters, no lists.** Only a Watchlist drawer, and nothing to remember what I'd seen.
-
-**What I kept from it:** the cinema idea (a marquee, a ticket with ADMIT and a stub), a "how heavy" slider, film vs. series, and "who's watching" (from the occasions).
-
-**What changed in Late Show Box Office:** everything on one screen. Move a slider and the ticket changes right away, with no questions first.
-
-<table><tr><th>Version 0</th><th>Final</th></tr><tr>
-<td><img src="images/v0-taste.png" width="380"></td>
-<td><img src="images/after-top.png" width="380"></td></tr></table>
 
 ## What did I want to make?
 
