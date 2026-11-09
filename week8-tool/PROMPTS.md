@@ -370,3 +370,13 @@ Every prompt I wrote to the AI (Claude, in Claude Code), in order and copied exa
 > yes build A, let me set the passcode
 
 ✅ Added **Copy my lists / Paste lists**, **Marie → Sign in** with a passcode on GitHub, **Sign out**, and **Set GitHub passcode** (owner only, on claude.ai), which makes a lock code. The passcode itself never goes into the page or the chat.
+
+**71.**
+> where can i choose Marie to signin?
+
+🔍 The Marie row only appears on GitHub once the lock code is in the page.
+
+**72.**
+> (I sent my passcode; left out here on purpose)
+
+✅ The AI made the lock code from it and put it into the GitHub page, so **Marie → Sign in** now appears there.

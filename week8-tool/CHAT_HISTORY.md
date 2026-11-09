@@ -1990,3 +1990,22 @@ Built it. The circle menu now has:
 I tested wrong and right passcodes, staying signed in after reload, signing out, making a lock code, and copying and pasting lists.
 
 ---
+### 71. Me · 11:01 AM
+
+> where can i choose Marie to signin?
+
+**Claude:**
+
+Not yet: the **Marie → Sign in** row only shows on GitHub once the lock code is in the page. Make it on the claude.ai page: circle menu → **Set GitHub passcode** → type it twice → **Make lock code** → copy it and send it here.
+
+---
+
+### 72. Me · 11:03 AM
+
+> (I sent my passcode here. It's left out of this file on purpose.)
+
+**Claude:**
+
+Made the lock code from it, put it into both pages, and tested a wrong passcode (refused), the right one (signed in as Marie) and staying signed in after reload. The passcode itself is only in the chat, not in the page or this file.
+
+---

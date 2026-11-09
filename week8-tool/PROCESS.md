@@ -1,7 +1,7 @@
 # Process record: Late Show Box Office
 
 A tool that picks a movie or TV series for tonight. You set your mood, and it prints a cinema ticket.
-Made with an AI assistant (Claude, in Claude Code) over one week (Nov 3–9, 2026), in 70 prompts.
+Made with an AI assistant (Claude, in Claude Code) over one week (Nov 3–9, 2026), in 72 prompts.
 [▶ Open the tool](https://marie-6.github.io/hello-world/week8-tool/) · [All prompts](PROMPTS.md) · [Full chat history](CHAT_HISTORY.md)
 
 **How to read the pictures:** "Before" is the screenshot I sent to the AI when I saw a problem. "After" is the same part of the finished tool. My screenshots are in dark mode, so the "after" pictures are too. A few "step" pictures show ideas we tried and then changed.

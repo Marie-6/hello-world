@@ -3561,7 +3561,7 @@ let editing=false, pendingDel=null;
 // everyone else starts as a guest and adds their own name. null = not known yet.
 const OWNER_NAME="Marie";let ownerView=null,verifiedOwner=false;
 // GitHub has no sign-in, so Marie is unlocked with a passcode. PASS is "salt.hash" (PBKDF2-SHA256); the passcode itself is never stored.
-const PASS=""/*PASSCODE*/;
+const PASS="RodSdVlFFRYhfvzJPJffyw==.Sy5T4hsSwRLLj7jhblFyGhtU/CGUIZhBYlJH8xY/oDE="/*PASSCODE*/;
 const unlocked=()=>!!PASS&&store.get("ls-unlock","")===PASS;
 const vis=()=>PROF.list.filter(p=>ownerView!==false||!p.owner);
 function renderPeople(){
