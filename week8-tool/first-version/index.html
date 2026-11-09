@@ -1,0 +1,753 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tonight's Feature</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column like a box-office window; a marquee header, then one step at a time, ending in a printed ticket. */
+:root {
+  --bg: #eef0f6;
+  --surface: #ffffff;
+  --surface-2: #e2e5ef;
+  --ink: #141a2c;
+  --muted: #586079;
+  --line: #cfd4e2;
+  --accent: #b85f00;
+  --accent-ink: #ffffff;
+  --bulb: #e39a1c;
+  --no: #c8372a;
+  --display: "Bungee", "Impact", "Arial Black", sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1424; --surface: #18203a; --surface-2: #222b48; --ink: #f2ecdf; --muted: #9aa3bc;
+    --line: #2d3757; --accent: #ffb547; --accent-ink: #1a1306; --bulb: #ffc861; --no: #ff7464;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1424; --surface: #18203a; --surface-2: #222b48; --ink: #f2ecdf; --muted: #9aa3bc;
+  --line: #2d3757; --accent: #ffb547; --accent-ink: #1a1306; --bulb: #ffc861; --no: #ff7464;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 20px 64px; display: flex; flex-direction: column; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--mono); }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+/* Marquee */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.marquee {
+  position: relative; padding: 14px 18px; border: 2px solid var(--bulb); border-radius: 6px;
+  background: var(--surface);
+}
+.marquee::before, .marquee::after {
+  content: ""; position: absolute; left: 6px; right: 6px; height: 8px;
+  background: radial-gradient(circle, var(--bulb) 0 2.5px, transparent 3px) 0 50% / 16px 8px repeat-x;
+  animation: chase 1.4s steps(2) infinite;
+}
+.marquee::before { top: 2px; }
+.marquee::after { bottom: 2px; animation-direction: reverse; }
+@keyframes chase { to { background-position-x: 16px; } }
+.marquee h1 { font-family: var(--display); font-weight: 400; font-size: clamp(22px, 5vw, 30px); letter-spacing: .02em; line-height: 1.1; padding-block: 6px; }
+.top-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn {
+  border: 1.5px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px 16px;
+  font-weight: 600; font-size: 14px; transition: border-color .15s, background .15s;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.ghost { background: transparent; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.link { background: none; border: 0; padding: 0; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
+.link:hover { color: var(--ink); }
+
+/* Steps */
+.steps { display: flex; gap: 6px; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; }
+.steps li { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 4px 10px; border-radius: 4px; background: var(--surface-2); }
+.steps li.on { background: var(--accent); color: var(--accent-ink); }
+.steps li.done { color: var(--ink); }
+
+.panel { display: flex; flex-direction: column; gap: 18px; }
+.panel > header { display: flex; flex-direction: column; gap: 6px; }
+.panel h2 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.15; font-weight: 700; }
+.lede { color: var(--muted); max-width: 60ch; }
+
+/* Occasion grid */
+.occ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.occ {
+  text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0;
+  transition: transform .15s, border-color .15s;
+}
+.occ:hover { border-color: var(--accent); transform: translateY(-2px); }
+.occ.on { border-color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.occ .admit { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--accent); }
+.occ strong { font-size: 17px; line-height: 1.25; }
+.occ span.sub { color: var(--muted); font-size: 14px; line-height: 1.35; }
+
+/* Settings */
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field > label, .field > .label { font-weight: 600; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.seg button { border: 1.5px solid var(--line); background: var(--surface); border-radius: 8px; padding: 8px 14px; font-size: 15px; }
+.seg button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.tone-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+input[type=range] { flex: 1 1 220px; accent-color: var(--accent); min-width: 0; }
+.tone-out { font-family: var(--mono); font-size: 14px; min-width: 14ch; }
+.nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* Taste card */
+.taste {
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 22px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.taste-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.taste h3 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 6vw, 38px); line-height: 1.05; }
+.taste .desc { color: var(--muted); }
+.dots { display: flex; gap: 4px; flex-wrap: wrap; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.dots i.done { background: var(--muted); }
+.dots i.now { background: var(--accent); }
+.examples { display: flex; flex-direction: column; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1.5px dashed var(--line); background: transparent; border-radius: 999px; padding: 6px 12px; font-size: 14px; }
+.chip[aria-pressed="true"] { border-style: solid; border-color: var(--ink); background: var(--ink); color: var(--bg); }
+.answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.ans {
+  border: 1.5px solid var(--line); background: var(--bg); border-radius: 10px; padding: 12px; text-align: left;
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+}
+.ans:hover { border-color: var(--accent); }
+.ans b { font-size: 15px; }
+.ans small { color: var(--muted); font-size: 13px; }
+.ans kbd { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.ans[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.ans.no:hover, .ans.no[aria-pressed="true"] { border-color: var(--no); box-shadow: inset 0 0 0 1.5px var(--no); }
+
+/* Results */
+.tweak {
+  display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: end; padding: 14px; border-radius: 10px;
+  background: var(--surface-2);
+}
+.tweak .field { gap: 4px; flex: 1 1 150px; min-width: 0; }
+.tweak .field.wide { flex-basis: 220px; }
+.tweak label, .tweak .tlabel { font-size: 12px; font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+.tweak select { background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; padding: 7px 10px; width: 100%; }
+.tweak .seg button { padding: 6px 10px; font-size: 14px; }
+
+.ticket {
+  display: grid; grid-template-columns: minmax(0, 1fr) 150px; background: var(--surface); border-radius: 12px;
+  border: 1.5px solid var(--line); position: relative; animation: print .5s ease-out;
+  -webkit-mask: radial-gradient(circle 13px at calc(100% - 150px) 0, #0000 98%, #000) top / 100% 51% no-repeat,
+                radial-gradient(circle 13px at calc(100% - 150px) 100%, #0000 98%, #000) bottom / 100% 51% no-repeat;
+          mask: radial-gradient(circle 13px at calc(100% - 150px) 0, #0000 98%, #000) top / 100% 51% no-repeat,
+                radial-gradient(circle 13px at calc(100% - 150px) 100%, #0000 98%, #000) bottom / 100% 51% no-repeat;
+}
+@keyframes print { from { transform: translateY(-8px); opacity: .6; } }
+.ticket-main { padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.ticket h2 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 6vw, 40px); line-height: 1.05; overflow-wrap: anywhere; }
+.meta { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.why { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.why li { font-size: 13px; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); }
+.why li.new { background: var(--accent); color: var(--accent-ink); }
+.ticket-stub {
+  border-left: 2px dashed var(--line); padding: 22px 16px; display: grid; grid-template-columns: 1fr; align-content: center; gap: 2px;
+  font-family: var(--mono); background: var(--surface-2);
+}
+.ticket-stub span { font-size: 10px; letter-spacing: .14em; color: var(--muted); }
+.ticket-stub strong { font-size: 16px; font-weight: 500; margin-bottom: 8px; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions .btn { padding: 6px 12px; font-size: 13px; }
+.btn.saved { border-color: var(--accent); color: var(--accent); }
+a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+
+.also h3 { font-size: 18px; margin-bottom: 4px; }
+.list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
+.row { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 14px; padding-block: 16px; border-top: 1px solid var(--line); }
+.row .rt { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: center; line-height: 1.2; padding-top: 3px; }
+.row .rt b { display: block; font-size: 17px; color: var(--ink); font-weight: 500; }
+.row-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.row h4 { margin: 0; font-size: 17px; }
+.row h4 small { font-weight: 400; color: var(--muted); font-size: 14px; }
+.row p { color: var(--muted); font-size: 14px; }
+.kind { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; vertical-align: 2px; margin-left: 4px; }
+.empty { padding: 24px; border: 1.5px dashed var(--line); border-radius: 12px; color: var(--muted); }
+
+/* Drawer */
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(380px, 100%); background: var(--surface); border-left: 1.5px solid var(--line);
+  padding: calc(20px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) 20px;
+  overflow-y: auto; z-index: 20; display: flex; flex-direction: column; gap: 14px; box-shadow: -12px 0 40px rgb(0 0 0 / .25);
+}
+.drawer header { display: flex; justify-content: space-between; align-items: center; }
+.drawer h2 { font-family: var(--display); font-weight: 400; font-size: 22px; }
+.drawer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
+.drawer li { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding-block: 10px; border-top: 1px solid var(--line); }
+.drawer li div { min-width: 0; }
+.drawer li small { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+@media (max-width: 560px) {
+  .ticket { grid-template-columns: 1fr; -webkit-mask: none; mask: none; }
+  .ticket-stub { border-left: 0; border-top: 2px dashed var(--line); grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: auto auto; gap: 2px 8px; padding: 14px 16px; }
+  .ticket-stub strong { margin-bottom: 0; font-size: 14px; }
+  .answers { grid-template-columns: 1fr; }
+  .taste { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="marquee"><h1>Tonight's Feature</h1></div>
+    <div class="top-actions">
+      <button class="btn ghost" id="watchlist-btn" data-action="open-drawer">Watchlist (0)</button>
+      <button class="btn ghost" data-action="restart">Start over</button>
+    </div>
+  </div>
+
+  <ol class="steps" id="steps">
+    <li data-step="occasion">1 · Occasion</li>
+    <li data-step="setup">2 · Mood</li>
+    <li data-step="taste">3 · Taste check</li>
+    <li data-step="results">Your lineup</li>
+  </ol>
+
+  <section class="panel" id="p-occasion">
+    <header>
+      <p class="eyebrow">Box office</p>
+      <h2>What's the occasion?</h2>
+      <p class="lede">Pick the situation first. A lunch break, a first date and a Friday with friends all need very different picks.</p>
+    </header>
+    <div class="occ-grid" id="occ-grid"></div>
+  </section>
+
+  <section class="panel" id="p-setup" hidden>
+    <header>
+      <p class="eyebrow" id="setup-eyebrow">Screen</p>
+      <h2>Set the mood</h2>
+      <p class="lede">We filled these in for your occasion. Change anything that doesn't fit.</p>
+    </header>
+    <div class="field">
+      <span class="label">Film or series?</span>
+      <div class="seg" id="format-seg"></div>
+    </div>
+    <div class="field">
+      <span class="label">How much time do you have?</span>
+      <div class="seg" id="time-seg"></div>
+    </div>
+    <div class="field">
+      <label for="tone">How heavy can it be?</label>
+      <div class="tone-row">
+        <input type="range" id="tone" min="1" max="5" step="1" value="2">
+        <span class="tone-out" id="tone-out"></span>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn ghost" data-action="go" data-to="occasion">Back</button>
+      <button class="btn primary" data-action="go" data-to="taste">Next: taste check</button>
+      <button class="link" data-action="go" data-to="results">Skip to picks</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-taste" hidden>
+    <header>
+      <p class="eyebrow">Taste check</p>
+      <h2>Have you watched this kind of thing?</h2>
+      <p class="lede">Tell us how you feel about each genre. Tap any example you've already seen and we won't recommend it.</p>
+    </header>
+    <div id="taste-card"></div>
+    <div class="nav">
+      <button class="btn ghost" data-action="taste-back">Back</button>
+      <button class="link" data-action="go" data-to="results">Skip the rest and show my picks</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-results" hidden>
+    <div class="tweak" id="tweak">
+      <div class="field wide">
+        <label for="r-occ">Occasion</label>
+        <select id="r-occ"></select>
+      </div>
+      <div class="field">
+        <label for="r-time">Time</label>
+        <select id="r-time"></select>
+      </div>
+      <div class="field">
+        <span class="tlabel">Format</span>
+        <div class="seg" id="r-format"></div>
+      </div>
+      <div class="field wide">
+        <label for="r-tone">Weight: <span id="r-tone-out"></span></label>
+        <input type="range" id="r-tone" min="1" max="5" step="1" value="2">
+      </div>
+    </div>
+    <div id="feature"></div>
+    <div class="nav">
+      <button class="btn primary" data-action="shuffle">Shuffle the lineup</button>
+      <button class="btn ghost" data-action="retake">Redo taste check</button>
+    </div>
+    <div class="also" id="also"></div>
+  </section>
+</div>
+
+<aside class="drawer" id="drawer" hidden aria-label="Watchlist">
+  <header>
+    <h2>Watchlist</h2>
+    <button class="btn ghost" data-action="close-drawer">Close</button>
+  </header>
+  <div id="drawer-body"></div>
+</aside>
+
+<script>
+// ---------- Data ----------
+// title | year | m=film s=series | minutes (episode length for series) | genres | weight 1-5 | occasions | blurb
+// Occasions: L lunch, D date, G friends, F family, S solo, C comfort, B binge, K background
+const RAW = `
+Paddington 2|2017|m|104|comedy|1|FCDG|A marmalade-loving bear, a prison kitchen, and Hugh Grant having the time of his life.
+The Grand Budapest Hotel|2014|m|99|comedy,crime|2|DSG|A concierge and his lobby boy get tangled in a stolen-painting caper, all in candy-box colors.
+Knives Out|2019|m|130|thriller,comedy,crime|2|GDF|A rich novelist dies, every relative is lying, and a detective with a drawl untangles it.
+Glass Onion|2022|m|139|thriller,comedy|2|GD|Benoit Blanc crashes a tech billionaire's island murder-mystery party.
+Superbad|2007|m|113|comedy|1|G|Two best friends try to score alcohol for one last high-school party. It goes badly.
+Bridesmaids|2011|m|125|comedy|1|G|A maid of honor spirals as her best friend's wedding plans spiral further.
+Palm Springs|2020|m|90|comedy,romance,scifi|2|DG|Two wedding guests get stuck reliving the same day and slowly stop minding.
+Crazy Rich Asians|2018|m|120|romance,comedy|1|DGC|An economics professor meets her boyfriend's very wealthy, very judgmental family.
+About Time|2013|m|123|romance,drama,fantasy|2|DC|A man who can time-travel uses it for love, then learns what actually matters.
+Before Sunrise|1995|m|101|romance,drama|2|DS|Two strangers get off a train in Vienna and talk until dawn.
+La La Land|2016|m|128|romance,drama|3|DS|A jazz pianist and an actress fall in love while chasing their dreams in LA.
+Past Lives|2023|m|106|romance,drama|3|DS|Childhood sweethearts reconnect decades later in New York. Quiet and devastating.
+Pride & Prejudice|2005|m|129|romance,drama|2|DCS|Elizabeth Bennet, Mr. Darcy, and the most famous hand flex in cinema.
+When Harry Met Sally...|1989|m|95|romance,comedy|1|DC|Can men and women just be friends? Twelve years of arguing about it.
+Notting Hill|1999|m|124|romance,comedy|1|DC|A London bookshop owner falls for the most famous actress in the world.
+10 Things I Hate About You|1999|m|97|romance,comedy|1|DGC|Shakespeare's Taming of the Shrew, moved to a 90s high school.
+Gone Girl|2014|m|149|thriller,crime,drama|4|S|A wife vanishes on her anniversary and her husband looks guiltier by the hour.
+Parasite|2019|m|132|thriller,drama,intl|4|SGD|A poor family cons its way into a rich household, then things turn.
+Prisoners|2013|m|153|thriller,crime|5|S|Two girls go missing and one father decides to find them himself.
+Zodiac|2007|m|157|thriller,crime|4|S|A cartoonist becomes obsessed with an unsolved serial-killer case.
+Get Out|2017|m|104|horror,thriller|4|GSD|Meeting the girlfriend's parents gets very, very strange.
+Hereditary|2018|m|127|horror|5|S|After a grandmother's death, a family's grief curdles into something worse.
+A Quiet Place|2018|m|90|horror,scifi|4|GD|A family survives in silence because the monsters hunt by sound.
+The Conjuring|2013|m|112|horror|4|G|Paranormal investigators take on a farmhouse haunting. Classic jump scares.
+Shaun of the Dead|2004|m|99|horror,comedy|2|G|A slacker tries to save his mum and his girlfriend from a zombie outbreak.
+Talk to Me|2023|m|95|horror|4|G|Teens get hooked on a party trick that lets spirits in.
+Interstellar|2014|m|169|scifi,drama|4|SG|Astronauts cross a wormhole to save humanity; a father races time to get home.
+Arrival|2016|m|116|scifi,drama|4|SD|A linguist is asked to talk to aliens, and it rewires how she sees time.
+Everything Everywhere All at Once|2022|m|139|scifi,comedy,action,drama|3|GDS|A laundromat owner fights across the multiverse while doing her taxes.
+Dune: Part Two|2024|m|166|scifi,action|4|GS|Paul Atreides joins the Fremen and the desert war begins.
+The Martian|2015|m|144|scifi,drama,comedy|2|GFS|Stranded on Mars, a botanist science-s his way to staying alive.
+Blade Runner 2049|2017|m|164|scifi|4|S|A replicant hunter uncovers a secret that could break society.
+Ex Machina|2014|m|108|scifi,thriller|4|SD|A programmer is invited to test whether a humanoid AI is truly conscious.
+The Lord of the Rings: The Fellowship of the Ring|2001|m|178|fantasy,action|3|GFS|A hobbit, a ring, and the start of the greatest quest on film.
+Pirates of the Caribbean: The Curse of the Black Pearl|2003|m|143|fantasy,action,comedy|2|GF|Captain Jack Sparrow, cursed pirates, and a lot of sword fights.
+The Princess Bride|1987|m|98|fantasy,romance,comedy|1|FDC|Fencing, fighting, true love, giants, and a grandpa reading a book.
+Harry Potter and the Prisoner of Azkaban|2004|m|142|fantasy|2|FC|Harry's third year: an escaped prisoner, a time-turner, and a hippogriff.
+Spirited Away|2001|m|125|anime,fantasy,animation|2|FCS|A girl must work in a bathhouse for spirits to free her parents.
+My Neighbor Totoro|1988|m|86|anime,animation|1|FC|Two sisters move to the countryside and meet a giant fluffy forest spirit.
+Your Name|2016|m|106|anime,romance|2|DS|Two teenagers start swapping bodies and fall for each other across distance.
+Howl's Moving Castle|2004|m|119|anime,fantasy,romance|1|DFC|A young hatter is cursed into an old woman and moves into a walking castle.
+Akira|1988|m|124|anime,scifi,action|4|S|Neo-Tokyo, biker gangs, and a teenager with terrifying psychic powers.
+Spider-Man: Into the Spider-Verse|2018|m|117|animation,action|1|GF|Miles Morales becomes Spider-Man and meets spider-people from other worlds.
+Coco|2017|m|105|animation|2|FC|A boy who wants to play music ends up in the Land of the Dead. Bring tissues.
+Inside Out|2015|m|95|animation,comedy|2|FC|The emotions inside an 11-year-old's head panic when she moves cities.
+Ratatouille|2007|m|111|animation,comedy|1|FCD|A rat who loves cooking secretly runs a Paris kitchen.
+The Mitchells vs. the Machines|2021|m|114|animation,comedy,scifi|1|FG|A chaotic family road trip collides with the robot apocalypse.
+WALL-E|2008|m|98|animation,scifi,romance|1|FC|A lonely trash-compacting robot falls in love and follows her into space.
+Mad Max: Fury Road|2015|m|120|action,scifi|4|G|Two hours of desert car chase. Somehow also a masterpiece.
+John Wick|2014|m|101|action,crime|4|G|Someone hurt a retired hitman's dog. Big mistake.
+Top Gun: Maverick|2022|m|131|action,drama|2|GF|Maverick trains a new class of pilots for an impossible mission.
+Mission: Impossible – Fallout|2018|m|147|action,thriller|3|G|Ethan Hunt chases stolen plutonium with stunts that are actually real.
+RRR|2022|m|187|action,drama,intl|3|G|Two revolutionaries in 1920s India, a lot of slow motion, and the best dance number of the decade.
+The Dark Knight|2008|m|152|action,crime,thriller|4|GS|Batman faces the Joker, who just wants to watch Gotham burn.
+Edge of Tomorrow|2014|m|113|action,scifi|3|G|A soldier relives the same alien battle every time he dies.
+Baby Driver|2017|m|113|action,crime|3|GD|A getaway driver times every chase to his playlist.
+Little Women|2019|m|135|drama,romance|2|CFS|The March sisters grow up, fall out, and find their own ways.
+Whiplash|2014|m|106|drama|4|S|A young drummer and a brutal teacher push each other too far.
+The Shawshank Redemption|1994|m|142|drama,crime|4|S|A banker serves a life sentence and never stops hoping.
+Good Will Hunting|1997|m|126|drama|3|SD|A janitor at MIT is a hidden genius. A therapist gets through to him.
+Aftersun|2022|m|101|drama|5|S|A woman remembers a holiday with her young dad. It hits later, and hard.
+Lady Bird|2017|m|94|drama,comedy|2|SC|A senior year in Sacramento, and a fierce, funny mother-daughter fight.
+The Social Network|2010|m|120|drama|3|SG|How Facebook was built, and how friendships were lost doing it.
+Pulp Fiction|1994|m|154|crime,comedy|4|GS|Hitmen, a boxer, a briefcase, and dialogue people still quote.
+Ocean's Eleven|2001|m|116|crime,comedy|1|GDC|Eleven charming thieves rob three Las Vegas casinos at once.
+Catch Me If You Can|2002|m|141|crime,drama|2|FGD|A teenage con man fakes his way through careers while the FBI chases him.
+The Nice Guys|2016|m|116|comedy,crime,action|2|G|A tough guy and a clumsy PI investigate a missing girl in 1970s LA.
+Free Solo|2018|m|100|docu|3|SG|Alex Honnold climbs El Capitan with no ropes. Your palms will sweat.
+My Octopus Teacher|2020|m|85|docu|1|CFS|A filmmaker befriends an octopus in a South African kelp forest.
+Jiro Dreams of Sushi|2011|m|81|docu,intl|1|CS|An 85-year-old sushi master still chasing perfection.
+Amélie|2001|m|122|romance,comedy,intl|1|DC|A shy Paris waitress secretly improves strangers' lives.
+Oldboy|2003|m|120|thriller,action,intl|5|S|A man is locked in a room for 15 years with no explanation, then released.
+Train to Busan|2016|m|118|horror,action,intl|4|G|A zombie outbreak on a speeding train to Busan.
+Perfect Days|2023|m|124|drama,intl|2|SC|A Tokyo toilet cleaner finds joy in small, repeating routines.
+Portrait of a Lady on Fire|2019|m|122|romance,drama,intl|4|SD|A painter secretly paints a reluctant bride on a remote Breton island.
+Mamma Mia!|2008|m|108|comedy,romance|1|GCF|A bride invites three possible dads to her Greek-island wedding. ABBA ensues.
+Barbie|2023|m|114|comedy|2|GD|Barbie has an existential crisis and travels to the real world.
+Hunt for the Wilderpeople|2016|m|101|comedy|1|FCG|A foster kid and his grumpy uncle become fugitives in the New Zealand bush.
+Groundhog Day|1993|m|101|comedy,romance|1|CD|A grumpy weatherman relives the same day until he gets it right.
+Ted Lasso|2020|s|35|comedy,drama|1|CBF|An American football coach takes over an English soccer team and wins people over with kindness.
+Brooklyn Nine-Nine|2013|s|22|comedy,crime|1|LCKB|A goofy detective and his precinct solve crimes and play elaborate pranks.
+The Office (US)|2005|s|22|comedy|1|LCK|Mockumentary about a paper company and its very awkward boss.
+Parks and Recreation|2009|s|22|comedy|1|LCK|An overly enthusiastic civil servant tries to build a park in a small Indiana town.
+Abbott Elementary|2021|s|22|comedy|1|LCKF|Underfunded Philadelphia teachers, filmed mockumentary-style.
+Schitt's Creek|2015|s|22|comedy|1|LCD|A rich family goes broke and has to live in the town they once bought as a joke.
+The Good Place|2016|s|22|comedy,fantasy|1|LBD|A woman wakes up in the afterlife's good place, and she knows she doesn't belong.
+What We Do in the Shadows|2019|s|25|comedy,horror|1|LG|Vampire roommates in Staten Island deal with very mundane problems.
+Fleabag|2016|s|27|comedy,drama|3|LSD|A messy, grieving Londoner talks straight to the camera. Short, sharp, perfect.
+The Bear|2022|s|30|drama,comedy|4|LSB|A fine-dining chef comes home to run his late brother's chaotic sandwich shop.
+Only Murders in the Building|2021|s|32|comedy,crime,thriller|1|LDC|Three neighbors start a true-crime podcast about a death in their building.
+Derry Girls|2018|s|25|comedy|1|LCG|Teen girls in 1990s Northern Ireland. Constantly loud, constantly funny.
+Friends|1994|s|22|comedy|1|LCK|Six friends, one coffee shop, ten seasons of comfort.
+New Girl|2011|s|22|comedy,romance|1|LCK|A quirky teacher moves into a loft with three single guys.
+Hacks|2021|s|30|comedy,drama|2|LB|A legendary Las Vegas comedian and a cancelled Gen Z writer forced to work together.
+Russian Doll|2019|s|28|comedy,scifi|3|LB|A woman keeps dying at her 36th birthday party and restarting the night.
+Gilmore Girls|2000|s|44|comedy,drama|1|CK|A fast-talking mother and daughter in a cozy Connecticut town.
+Severance|2022|s|50|scifi,thriller|4|BSD|Office workers have their work memories surgically split from their home lives.
+Stranger Things|2016|s|55|scifi,horror,fantasy|3|BGF|80s kids, a missing friend, a girl with powers, and a monster from the Upside Down.
+Black Mirror|2011|s|60|scifi,thriller|4|SD|Standalone stories about technology going a little too far. Watch any episode.
+Dark|2017|s|55|scifi,thriller,intl|4|BS|Children vanish in a German town, and four families are linked across time.
+Breaking Bad|2008|s|47|crime,drama,thriller|5|BS|A chemistry teacher turns meth kingpin. Gets better every season.
+Better Call Saul|2015|s|47|crime,drama|4|SB|How a small-time lawyer becomes Saul Goodman.
+Mindhunter|2017|s|55|crime,thriller|4|BS|FBI agents in the 1970s interview serial killers to understand them.
+True Detective|2014|s|60|crime,thriller|5|S|Two Louisiana detectives chase a ritual killer across 17 years. Season 1 stands alone.
+Sherlock|2010|s|88|crime,thriller|2|BDG|A modern Sherlock Holmes solves cases in London at high speed.
+Columbo|1971|s|90|crime|1|CKS|You see the murder first. Then a scruffy detective with "just one more thing" catches them.
+Money Heist|2017|s|50|crime,thriller,intl|4|BG|A mastermind called the Professor plans the biggest heist in Spanish history.
+Slow Horses|2022|s|45|thriller,comedy|3|BS|Disgraced MI5 agents get dumped in a dead-end office and keep stumbling onto real plots.
+The Haunting of Hill House|2018|s|55|horror,drama|5|BS|A family haunted, literally and otherwise, by the house they grew up in.
+Midnight Mass|2021|s|65|horror|5|S|A charismatic priest arrives on a tiny island, and miracles start happening.
+Kingdom|2019|s|50|horror,action,intl|4|B|A crown prince fights a zombie plague in Joseon-era Korea.
+Squid Game|2021|s|55|thriller,action,intl|5|BG|Broke contestants play children's games for a fortune. Losing is deadly.
+Crash Landing on You|2019|s|75|romance,comedy,intl|2|BDC|A South Korean heiress paraglides into North Korea and lands on a soldier.
+Extraordinary Attorney Woo|2022|s|70|drama,comedy,intl|1|CB|A brilliant autistic lawyer starts at a top Seoul law firm.
+Bridgerton|2020|s|60|romance,drama|2|BDC|Regency-era London marriage season, with gossip, scandal and string quartets playing pop songs.
+Normal People|2020|s|30|romance,drama|4|LSDB|Two Irish teens drift together and apart through school and university.
+Heartstopper|2022|s|30|romance|1|LCF|Two British schoolboys become friends and fall for each other. Pure warmth.
+The Crown|2016|s|55|drama|3|SC|Queen Elizabeth II's reign, from the start, one decade at a time.
+Succession|2018|s|60|drama,comedy|4|BS|A media mogul's awful children fight to take over his empire.
+The White Lotus|2021|s|60|comedy,drama|3|BD|Rich guests and stressed staff at a luxury resort, and one body.
+Game of Thrones|2011|s|57|fantasy,drama,action|5|BS|Noble families fight for the Iron Throne while winter comes.
+The Last of Us|2023|s|55|drama,horror,action|5|BS|A smuggler escorts a teenage girl across a fungus-ravaged America.
+Shōgun|2024|s|60|drama,action,intl|4|SB|An English sailor washes up in feudal Japan and enters a war for power.
+The Mandalorian|2019|s|40|scifi,action|2|FGB|A lone bounty hunter protects a small green child across the galaxy.
+Andor|2022|s|50|scifi,thriller|3|SB|How an ordinary thief becomes a rebel. Star Wars for grown-ups.
+Arcane|2021|s|40|animation,fantasy,action|3|BSG|Two sisters on opposite sides of a war between a rich city and its underground.
+Avatar: The Last Airbender|2005|s|23|animation,fantasy,action|1|LFCB|A young airbender must master all four elements to end a war.
+Bluey|2018|s|7|animation,comedy|1|LFCK|A Blue Heeler puppy and her family play imaginative games. Adults cry at it too.
+BoJack Horseman|2014|s|25|animation,comedy,drama|4|LS|A washed-up sitcom horse in Hollywood. Funny, then very sad.
+Love, Death & Robots|2019|s|15|animation,scifi|3|LG|Short animated sci-fi stories, each in a different style.
+Attack on Titan|2013|s|24|anime,action,fantasy|5|LBS|Humanity lives behind walls to hide from giant man-eating Titans.
+Frieren: Beyond Journey's End|2023|s|24|anime,fantasy|2|LCS|An elf mage looks back on her finished hero's quest and learns what she missed.
+Spy x Family|2022|s|24|anime,comedy,action|1|LCF|A spy, an assassin and a telepathic kid fake being a family.
+Cowboy Bebop|1998|s|24|anime,scifi|3|LS|Bounty hunters drift through space to a jazz soundtrack.
+Planet Earth II|2016|s|50|docu|1|FCK|David Attenborough and the most stunning nature footage ever filmed.
+Chef's Table|2015|s|50|docu|1|KCS|Each episode follows one of the world's great chefs and how they cook.
+Making a Murderer|2015|s|60|docu,crime|4|BS|A man exonerated of one crime is charged with another. Did the system fail him twice?
+Queer Eye|2018|s|45|docu|1|CK|Five experts give someone a life makeover. You will cry a happy cry.
+The Great British Baking Show|2010|s|60|docu|1|CKF|Amateur bakers in a tent, being very kind to each other.
+`;
+const TITLES = RAW.trim().split("\n").map(line => {
+  const [t, y, k, r, g, tone, o, b] = line.split("|");
+  return { t, y: +y, k, r: +r, g: g.split(","), tone: +tone, o, b };
+});
+
+const GENRES = [
+  { id: "comedy", name: "Comedy", desc: "Sitcoms, buddy comedies, things that make you snort-laugh.", ex: ["Superbad", "The Office (US)", "Schitt's Creek"] },
+  { id: "romance", name: "Romance", desc: "Rom-coms, slow burns, big swoony gestures.", ex: ["When Harry Met Sally...", "Pride & Prejudice", "Normal People"] },
+  { id: "thriller", name: "Thriller & Mystery", desc: "Twists, whodunits, holding your breath.", ex: ["Gone Girl", "Knives Out", "Severance"] },
+  { id: "horror", name: "Horror", desc: "Jump scares, slow dread, things in the dark.", ex: ["Get Out", "Hereditary", "The Haunting of Hill House"] },
+  { id: "scifi", name: "Sci-fi", desc: "Space, time loops, the near future going wrong.", ex: ["Interstellar", "Arrival", "Black Mirror"] },
+  { id: "fantasy", name: "Fantasy", desc: "Quests, magic, swords and dragons.", ex: ["The Lord of the Rings: The Fellowship of the Ring", "The Princess Bride", "Game of Thrones"] },
+  { id: "animation", name: "Animation", desc: "Pixar, Spider-Verse, and cartoons made for grown-ups too.", ex: ["Coco", "Spider-Man: Into the Spider-Verse", "Arcane"] },
+  { id: "anime", name: "Anime", desc: "Studio Ghibli, epic battles, Japanese animation.", ex: ["Spirited Away", "Your Name", "Attack on Titan"] },
+  { id: "drama", name: "Drama", desc: "Character stories that stay with you after.", ex: ["Whiplash", "Lady Bird", "Succession"] },
+  { id: "crime", name: "Crime", desc: "Heists, cons, cops and criminals.", ex: ["Pulp Fiction", "Breaking Bad", "Ocean's Eleven"] },
+  { id: "action", name: "Action", desc: "Chases, fights, big set pieces.", ex: ["Mad Max: Fury Road", "John Wick", "Top Gun: Maverick"] },
+  { id: "docu", name: "Documentary & Real Life", desc: "Nature, true crime, food, real people.", ex: ["Free Solo", "My Octopus Teacher", "Planet Earth II"] },
+  { id: "intl", name: "Subtitles & World Cinema", desc: "Korean, French, Spanish, Indian, Japanese, with subtitles.", ex: ["Parasite", "Amélie", "Squid Game"] },
+];
+const GENRE_NAME = Object.fromEntries(GENRES.map(g => [g.id, g.name]));
+
+const ANSWERS = [
+  { id: "love", label: "Seen lots, love it", sub: "Give me more of this", val: 3 },
+  { id: "fine", label: "Seen some, it's fine", sub: "Sometimes, if it's good", val: 0.5 },
+  { id: "curious", label: "Haven't tried, curious", sub: "Show me a good starting point", val: 2 },
+  { id: "no", label: "Not for me", sub: "Keep it off the list", val: -5 },
+];
+const ANSWER_VAL = Object.fromEntries(ANSWERS.map(a => [a.id, a.val]));
+
+const OCCASIONS = [
+  { id: "lunch", code: "L", name: "Lunch break", sub: "Short episodes you can finish before the meeting.", admit: "1", why: "Fits a lunch break", d: { format: "any", time: 30, tone: 1 } },
+  { id: "date", code: "D", name: "Date night", sub: "Something you can talk about after.", admit: "2", why: "Good date-night pick", d: { format: "film", time: 150, tone: 2 } },
+  { id: "group", code: "G", name: "Movie night with friends", sub: "Crowd-pleasers that are fun to react to together.", admit: "6", why: "Great with a group", d: { format: "film", time: 150, tone: 2 } },
+  { id: "family", code: "F", name: "Family time", sub: "Works for kids and grown-ups on one couch.", admit: "4", why: "Family-friendly", d: { format: "film", time: 150, tone: 1 } },
+  { id: "solo", code: "S", name: "Just me, fully focused", sub: "Absorbing stuff that deserves your attention.", admit: "1", why: "Rewards full attention", d: { format: "any", time: 999, tone: 4 } },
+  { id: "cozy", code: "C", name: "Comfort watch", sub: "Rainy day, blanket, nothing stressful.", admit: "1", why: "Pure comfort", d: { format: "any", time: 999, tone: 1 } },
+  { id: "binge", code: "B", name: "Weekend binge", sub: "A series that makes you hit next episode.", admit: "1", why: "Very bingeable", d: { format: "series", time: 999, tone: 3 } },
+  { id: "background", code: "K", name: "While cooking or cleaning", sub: "Easy to follow when you look away.", admit: "1", why: "Easy to half-watch", d: { format: "series", time: 999, tone: 1 } },
+];
+const OCC = Object.fromEntries(OCCASIONS.map(o => [o.id, o]));
+
+const FORMATS = [{ id: "film", name: "Film" }, { id: "series", name: "Series" }, { id: "any", name: "Either" }];
+const TIMES = [{ id: 30, name: "Under 30 min" }, { id: 100, name: "Under 1h 40" }, { id: 150, name: "Under 2h 30" }, { id: 999, name: "All night" }];
+const TONES = ["", "Feather-light", "Easygoing", "Some substance", "Intense", "Emotionally wreck me"];
+
+// ---------- State ----------
+const KEY = "tonights-feature-v1";
+const fresh = () => ({ step: "occasion", occ: null, format: "any", time: 999, tone: 2, prefs: {}, seen: [], skip: [], saved: [], gi: 0, seed: 1 });
+let S = fresh();
+try { const saved = JSON.parse(localStorage.getItem(KEY)); if (saved) S = { ...S, ...saved }; } catch (e) {}
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+// ---------- Helpers ----------
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const byTitle = t => TITLES.find(x => x.t === t);
+function hash(str) { let h = 2166136261; for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967295; }
+function runtime(x) {
+  if (x.k === "s") return `${x.r}-min episodes`;
+  const h = Math.floor(x.r / 60), m = x.r % 60;
+  return h ? `${h}h ${String(m).padStart(2, "0")}m` : `${m}m`;
+}
+
+// ---------- Recommendation ----------
+function rank() {
+  const occ = OCC[S.occ] || null;
+  const out = [];
+  for (const x of TITLES) {
+    if (S.seen.includes(x.t) || S.skip.includes(x.t)) continue;
+    if (S.format === "film" && x.k !== "m") continue;
+    if (S.format === "series" && x.k !== "s") continue;
+    if (x.r > S.time) continue;
+    if (occ && occ.id === "family" && !x.o.includes("F")) continue;
+    if (occ && occ.id === "lunch" && x.r > 35) continue;
+
+    let score = 0, hated = false;
+    const reasons = [];
+    x.g.forEach((g, i) => {
+      const p = S.prefs[g];
+      if (!p) return;
+      const w = i === 0 || g === "intl" ? 1 : 0.6;
+      score += ANSWER_VAL[p] * w;
+      if (p === "no") hated = true;
+      if (p === "love") reasons.push({ text: `You love ${GENRE_NAME[g]}`, say: `you love ${GENRE_NAME[g].toLowerCase()}` });
+      if (p === "curious") reasons.push({ text: `New for you: ${GENRE_NAME[g]}`, isNew: true, say: `you said you're curious about ${GENRE_NAME[g].toLowerCase()}` });
+    });
+    if (hated) score -= 4;
+    if (occ) {
+      if (x.o.includes(occ.code)) {
+        score += 4;
+        const say = occ.id === "lunch" ? `the episodes are only ${x.r} minutes` : OCC_SAY[occ.id];
+        reasons.push({ text: occ.id === "lunch" ? `${x.r}-min episodes` : occ.why, say });
+      }
+      else score -= 2;
+    }
+    const d = Math.abs(x.tone - S.tone);
+    score -= d * 1.3;
+    if (d === 0) reasons.push({ text: TONES[x.tone], say: TONE_SAY[x.tone] });
+    score += hash(x.t + S.seed) * 1.5;
+    out.push({ x, score, reasons: reasons.slice(0, 3) });
+  }
+  return out.sort((a, b) => b.score - a.score);
+}
+
+// ---------- Render ----------
+const ORDER = ["occasion", "setup", "taste", "results"];
+if (!ORDER.includes(S.step)) S.step = "occasion";
+function render() {
+  ORDER.forEach(s => { $("p-" + s).hidden = S.step !== s; });
+  const idx = ORDER.indexOf(S.step);
+  document.querySelectorAll("#steps li").forEach((li, i) => {
+    li.className = i === idx ? "on" : i < idx ? "done" : "";
+  });
+  $("watchlist-btn").textContent = `Watchlist (${S.saved.length})`;
+  ({ occasion: renderOccasion, setup: renderSetup, taste: renderTaste, results: renderResults })[S.step]();
+  persist();
+}
+
+function renderOccasion() {
+  $("occ-grid").innerHTML = OCCASIONS.map(o => `
+    <button class="occ${S.occ === o.id ? " on" : ""}" data-action="pick-occ" data-id="${o.id}">
+      <span class="admit">ADMIT ${o.admit}</span>
+      <strong>${esc(o.name)}</strong>
+      <span class="sub">${esc(o.sub)}</span>
+    </button>`).join("");
+}
+
+function segHTML(items, current, action) {
+  return items.map(i => `<button aria-pressed="${String(i.id) === String(current)}" data-action="${action}" data-id="${i.id}">${esc(i.name)}</button>`).join("");
+}
+
+function renderSetup() {
+  $("setup-eyebrow").textContent = S.occ ? `Screen: ${OCC[S.occ].name}` : "Screen";
+  $("format-seg").innerHTML = segHTML(FORMATS, S.format, "set-format");
+  $("time-seg").innerHTML = segHTML(TIMES, S.time, "set-time");
+  $("tone").value = S.tone;
+  $("tone-out").textContent = `${S.tone} · ${TONES[S.tone]}`;
+}
+
+function renderTaste() {
+  const g = GENRES[S.gi];
+  const dots = GENRES.map((_, i) => `<i class="${i === S.gi ? "now" : S.prefs[GENRES[i].id] ? "done" : ""}"></i>`).join("");
+  $("taste-card").innerHTML = `
+    <div class="taste">
+      <div class="taste-top">
+        <span class="eyebrow">Genre ${S.gi + 1} of ${GENRES.length}</span>
+        <div class="dots" aria-hidden="true">${dots}</div>
+      </div>
+      <div>
+        <h3>${esc(g.name)}</h3>
+        <p class="desc">${esc(g.desc)}</p>
+      </div>
+      <div class="examples">
+        <span class="eyebrow">Seen any of these? Tap to mark</span>
+        <div class="chips">${g.ex.map(t => `<button class="chip" aria-pressed="${S.seen.includes(t)}" data-action="toggle-seen" data-t="${esc(t)}">${S.seen.includes(t) ? "✓ " : ""}${esc(t)}</button>`).join("")}</div>
+      </div>
+      <div class="answers">
+        ${ANSWERS.map((a, i) => `
+          <button class="ans${a.id === "no" ? " no" : ""}" aria-pressed="${S.prefs[g.id] === a.id}" data-action="answer" data-id="${a.id}">
+            <b>${esc(a.label)}</b><small>${esc(a.sub)}</small><kbd>Press ${i + 1}</kbd>
+          </button>`).join("")}
+      </div>
+    </div>`;
+}
+
+function actionsHTML(x, big) {
+  const saved = S.saved.includes(x.t);
+  const q = encodeURIComponent(x.t);
+  return `<div class="actions">
+    <button class="btn${saved ? " saved" : ""}" data-action="save" data-t="${esc(x.t)}">${saved ? "Saved" : "Save for later"}</button>
+    <button class="btn" data-action="seen" data-t="${esc(x.t)}">Already seen</button>
+    <button class="btn" data-action="skip" data-t="${esc(x.t)}">Not tonight</button>
+    ${big ? `<a class="btn" href="https://www.justwatch.com/us/search?q=${q}" target="_blank" rel="noopener">Where to stream</a>` : ""}
+  </div>`;
+}
+
+function whyHTML(reasons) {
+  return reasons.length ? `<ul class="why">${reasons.map(r => `<li${r.isNew ? ' class="new"' : ""}>${esc(r.text)}</li>`).join("")}</ul>` : "";
+}
+
+function renderResults() {
+  $("r-occ").innerHTML = `<option value="">Any occasion</option>` + OCCASIONS.map(o => `<option value="${o.id}"${S.occ === o.id ? " selected" : ""}>${esc(o.name)}</option>`).join("");
+  $("r-time").innerHTML = TIMES.map(t => `<option value="${t.id}"${S.time === t.id ? " selected" : ""}>${esc(t.name)}</option>`).join("");
+  $("r-format").innerHTML = segHTML(FORMATS, S.format, "set-format");
+  $("r-tone").value = S.tone;
+  $("r-tone-out").textContent = TONES[S.tone];
+
+  const list = rank();
+  if (!list.length) {
+    $("feature").innerHTML = `<div class="empty">Nothing matches every filter right now. Try "All night" for time, "Either" for format, or a different occasion.</div>`;
+    $("also").innerHTML = "";
+    return;
+  }
+  const top = list[0], x = top.x, occ = OCC[S.occ];
+  const seat = "ABCDEFGHJK"[Math.floor(hash(x.t) * 10)] + (1 + Math.floor(hash(x.t + "s") * 18));
+  $("feature").innerHTML = `
+    <article class="ticket">
+      <div class="ticket-main">
+        <p class="eyebrow">Feature presentation · ${x.k === "s" ? "Series" : "Film"}</p>
+        <h2>${esc(x.t)}</h2>
+        <p class="meta">${x.y} · ${runtime(x)} · ${x.g.map(g => GENRE_NAME[g]).join(", ")}</p>
+        <p>${esc(x.b)}</p>
+        ${whyHTML(top.reasons)}
+        ${actionsHTML(x, true)}
+      </div>
+      <div class="ticket-stub">
+        <span>ADMIT</span><strong>${occ ? occ.admit : "1"}</strong>
+        <span>SCREEN</span><strong>${occ ? esc(occ.name.split(" ")[0]).toUpperCase() : "ANY"}</strong>
+        <span>SEAT</span><strong>${seat}</strong>
+        <span>RUNTIME</span><strong>${x.r} MIN${x.k === "s" ? "/EP" : ""}</strong>
+      </div>
+    </article>`;
+
+  const rest = list.slice(1, 7);
+  $("also").innerHTML = rest.length ? `
+    <h3>Also showing</h3>
+    <ul class="list">${rest.map(({ x, reasons }) => `
+      <li class="row">
+        <div class="rt"><b>${x.r}</b>${x.k === "s" ? "min/ep" : "min"}</div>
+        <div class="row-body">
+          <h4>${esc(x.t)} <small>${x.y}</small><span class="kind">${x.k === "s" ? "Series" : "Film"}</span></h4>
+          <p>${esc(x.b)}</p>
+          ${whyHTML(reasons)}
+          ${actionsHTML(x, false)}
+        </div>
+      </li>`).join("")}
+    </ul>` : "";
+}
+
+function renderDrawer() {
+  $("drawer-body").innerHTML = S.saved.length ? `<ul>${S.saved.map(t => {
+    const x = byTitle(t);
+    return `<li><div><strong>${esc(t)}</strong><br><small>${x ? `${x.y} · ${runtime(x)}` : ""}</small></div>
+      <button class="link" data-action="unsave" data-t="${esc(t)}">Remove</button></li>`;
+  }).join("")}</ul>` : `<p class="lede">Nothing saved yet. Tap "Save for later" on any pick and it lands here.</p>`;
+}
+
+// ---------- Events ----------
+function applyOccasion(id) {
+  S.occ = id || null;
+  if (id) Object.assign(S, OCC[id].d);
+}
+function toggle(arr, v) { const i = arr.indexOf(v); i < 0 ? arr.push(v) : arr.splice(i, 1); }
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-action]");
+  if (!el) return;
+  const a = el.dataset.action, id = el.dataset.id, t = el.dataset.t;
+  switch (a) {
+    case "pick-occ": applyOccasion(id); S.step = "setup"; break;
+    case "go": S.step = el.dataset.to; break;
+    case "set-format": S.format = id; break;
+    case "set-time": S.time = +id; break;
+    case "toggle-seen": toggle(S.seen, t); break;
+    case "answer":
+      S.prefs[GENRES[S.gi].id] = id;
+      if (S.gi < GENRES.length - 1) S.gi++; else S.step = "results";
+      break;
+    case "taste-back": if (S.gi > 0) S.gi--; else S.step = "setup"; break;
+    case "retake": S.gi = 0; S.step = "taste"; break;
+    case "shuffle": S.seed++; break;
+    case "save": toggle(S.saved, t); break;
+    case "seen": if (!S.seen.includes(t)) S.seen.push(t); break;
+    case "skip": if (!S.skip.includes(t)) S.skip.push(t); break;
+    case "unsave": toggle(S.saved, t); renderDrawer(); break;
+    case "open-drawer": renderDrawer(); $("drawer").hidden = false; return void render();
+    case "close-drawer": $("drawer").hidden = true; return;
+    case "restart": { const saved = S.saved; S = fresh(); S.saved = saved; break; }
+  }
+  if (a === "go" || a === "pick-occ" || a === "restart" || a === "retake") window.scrollTo({ top: 0, behavior: "smooth" });
+  render();
+});
+
+$("tone").addEventListener("input", e => { S.tone = +e.target.value; renderSetup(); persist(); });
+$("r-tone").addEventListener("input", e => { S.tone = +e.target.value; render(); });
+$("r-occ").addEventListener("change", e => { applyOccasion(e.target.value); render(); });
+$("r-time").addEventListener("change", e => { S.time = +e.target.value; render(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") $("drawer").hidden = true;
+  if (S.step !== "taste" || e.target.matches("input, select")) return;
+  const n = +e.key;
+  if (n >= 1 && n <= 4) document.querySelectorAll(".ans")[n - 1]?.click();
+});
+
+render();
+</script>
+
+</body></html>

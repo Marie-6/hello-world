@@ -350,3 +350,8 @@ Every prompt I wrote to the AI (Claude, in Claude Code), in order and copied exa
 > change the name to "week8-tool" and make sure it is below "week7"
 
 ✅ Renamed the folder to `week8-tool`, so it sits right after `week7-8` on GitHub.
+
+**67.**
+> https://claude.ai/artifact/U2nC1QNttQsWTSRA2kH8jq and this is the first version
+
+✅ Added the first version, *Tonight's Feature*, as "Version 0": a playable copy in `first-version/`, screenshots of its 4 steps, and a first-vs-final comparison in the process record.

@@ -1945,3 +1945,12 @@ Made "Marie" a locked owner profile: only the page owner, signed in on claude.ai
 Renamed the folder from "week 8 tool" to `week8-tool` and updated the links in the README, process record and prompts. GitHub sorts folders by name, so `week8-tool` now comes right after `week7-8`.
 
 ---
+### 67. Me · 10:38 AM
+
+> https://claude.ai/artifact/U2nC1QNttQsWTSRA2kH8jq and this is the first version
+
+**Claude:**
+
+That's *Tonight's Feature*, the first try, made in a different chat (it isn't in this conversation's log). I added it to the GitHub folder as "Version 0": a playable copy in `first-version/`, screenshots of its 4 steps (occasion → mood → taste check → lineup), and a first-vs-final comparison at the top of the process record. Its last step has a bug (two names used but never defined), so "Your lineup" crashes and never shows a ticket. I kept it exactly as it was.
+
+---
