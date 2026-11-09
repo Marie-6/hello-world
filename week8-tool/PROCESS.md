@@ -64,7 +64,7 @@ In "My list" a title was only a line of text. I asked for the ticket to pop up a
 
 ### 4. A short header
 
-The header had three lines of small grey text explaining the tool. The AI suggested one short tagline instead: "One ticket, one perfect pick for tonight."
+The header had three lines of small grey text explaining the tool. 
 
 <table><tr><th>Before</th><th>Step</th></tr><tr>
 <td><img src="images/before-header-description.png" width="380"></td>
