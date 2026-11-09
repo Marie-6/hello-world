@@ -2009,3 +2009,15 @@ Not yet: the **Marie → Sign in** row only shows on GitHub once the lock code i
 Made the lock code from it, put it into both pages, and tested a wrong passcode (refused), the right one (signed in as Marie) and staying signed in after reload. The passcode itself is only in the chat, not in the page or this file.
 
 ---
+
+### 73. Me · 1:31 PM
+
+> (screenshot of section 7, "See related", in the process file) also here, we add the see the same director
+
+**Claude:**
+
+Added a picture of the **More by Hayao Miyazaki** tab next to the Similar mood one, so the After row shows both tabs.
+
+<img src="images/after-related-director.png" width="560">
+
+---

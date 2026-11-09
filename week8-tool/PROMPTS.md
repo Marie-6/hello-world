@@ -380,3 +380,8 @@ Every prompt I wrote to the AI (Claude, in Claude Code), in order and copied exa
 > (I sent my passcode; left out here on purpose)
 
 ✅ The AI made the lock code from it and put it into the GitHub page, so **Marie → Sign in** now appears there.
+
+**73.**
+> also here, we add the see the same director
+
+✅ Section 7 of the process file now shows both tabs of "See related": **Similar mood** and **More by the same director** (10 Miyazaki films for *Spirited Away*).

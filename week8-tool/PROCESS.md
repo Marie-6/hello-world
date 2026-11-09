@@ -1,7 +1,7 @@
 # Process record: Late Show Box Office
 
 A tool that picks a movie or TV series for tonight. You set your mood, and it prints a cinema ticket.
-Made with an AI assistant (Claude, in Claude Code) over one week (Nov 3–9, 2026), in 72 prompts.
+Made with an AI assistant (Claude, in Claude Code) over one week (Nov 3–9, 2026), in 73 prompts.
 [▶ Open the tool](https://marie-6.github.io/hello-world/week8-tool/) · [All prompts](PROMPTS.md) · [Full chat history](CHAT_HISTORY.md)
 
 **How to read the pictures:** "Before" is the screenshot I sent to the AI when I saw a problem. "After" is the same part of the finished tool. My screenshots are in dark mode, so the "after" pictures are too. A few "step" pictures show ideas we tried and then changed.
@@ -98,13 +98,14 @@ I kept noticing parts that changed height: the two columns ended at different li
 
 ### 7. See related
 
-"See related" first opened under the ticket and pushed the page down. It became a pop-up with **4 pages of 6** titles that feel similar (by the mood scores), and a second tab, **More by [director]**. The cards first changed height from page to page, so they got a fixed size too: the title always takes 2 lines.
+"See related" first opened under the ticket and pushed the page down. It became a pop-up with **4 pages of 6** titles that feel similar (by the mood scores), and a second tab, **More by [director]**, which shows every other film in the catalogue by the same director, oldest first (for *Spirited Away*, that is 10 Miyazaki films). The cards first changed height from page to page, so they got a fixed size too: the title always takes 2 lines.
 
 <table><tr><th>Before: only 6</th><th>Before: card heights drift</th></tr><tr>
 <td><img src="images/before-related-6.jpg" width="380"></td>
 <td><img src="images/before-related-drift-1.jpg" width="380"></td></tr>
-<tr><th colspan="2">After</th></tr><tr>
-<td colspan="2"><img src="images/after-related.png" width="600"></td></tr></table>
+<tr><th>After: Similar mood</th><th>After: More by the same director</th></tr><tr>
+<td><img src="images/after-related.png" width="380"></td>
+<td><img src="images/after-related-director.png" width="380"></td></tr></table>
 
 ### 8. On your list ✓ / Remove
 
