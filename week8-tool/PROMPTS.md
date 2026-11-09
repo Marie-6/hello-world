@@ -360,3 +360,13 @@ Every prompt I wrote to the AI (Claude, in Claude Code), in order and copied exa
 > you dont need to ad"version 0" you can just post the version0 photos in the process file
 
 ✅ Removed the "Version 0" section and the playable copy; the process record now just shows the first version's 4 screenshots.
+
+**69.**
+> how can i sign in if i open the link in github? i want to sign in "marie" and have all my list and history
+
+🔍 The AI explained that GitHub Pages has no accounts and that lists live in each browser, separately per website. It offered (A) a transfer code plus a passcode, or (B) a real online database.
+
+**70.**
+> yes build A, let me set the passcode
+
+✅ Added **Copy my lists / Paste lists**, **Marie → Sign in** with a passcode on GitHub, **Sign out**, and **Set GitHub passcode** (owner only, on claude.ai), which makes a lock code. The passcode itself never goes into the page or the chat.

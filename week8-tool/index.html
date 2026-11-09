@@ -284,6 +284,11 @@ input[type=range]::-moz-range-thumb{width:12px;height:24px;border-radius:3px;bac
 .add-row{display:flex;gap:14px;align-items:center}
 .add-form .btn{padding:7px 14px}
 .acct-note{margin:0;font-size:13px;color:var(--muted);line-height:1.4}
+.acct-tools{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.tool-links{display:flex;flex-wrap:wrap;gap:6px 16px}
+.acct-tools textarea{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:8px 10px;font:12px/1.4 var(--mono);width:100%;box-sizing:border-box;resize:none;word-break:break-all}
+.tool-out{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.prow .lock{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 
 
 /* alignment pass: shared left edges, shared baselines, equal gaps */
@@ -327,6 +332,35 @@ legend.label{padding:0;margin-bottom:12px}
             <input id="add-name" maxlength="20" placeholder="Their name" aria-label="Name of the new person" autocomplete="off">
             <div class="add-row"><button class="btn" type="submit">Add</button><button class="link" type="button" id="add-cancel">Cancel</button></div>
           </form>
+          <div class="acct-tools" id="acct-tools">
+            <div class="tool-links"><button class="link" type="button" id="t-export">Copy my lists</button><button class="link" type="button" id="t-import">Paste lists</button><button class="link" type="button" id="t-setpass" hidden>Set GitHub passcode</button><button class="link" type="button" id="t-signout" hidden>Sign out</button></div>
+            <div class="add-form tool" id="tool-export" hidden>
+              <p class="acct-note">Paste this code on the other page with "Paste lists" to bring <b id="exp-who"></b>'s lists across.</p>
+              <textarea id="exp-code" readonly rows="3" aria-label="Your lists as a code"></textarea>
+              <div class="add-row"><button class="btn" type="button" id="exp-copy">Copy</button><button class="link" type="button" data-close>Done</button></div>
+            </div>
+            <form class="add-form tool" id="tool-import" hidden>
+              <p class="acct-note">Paste a code from "Copy my lists". The titles are added to <b id="imp-who"></b>'s lists.</p>
+              <textarea id="imp-code" rows="3" placeholder="LSBO1:…" aria-label="Lists code" spellcheck="false"></textarea>
+              <div class="add-row"><button class="btn" type="submit">Add lists</button><button class="link" type="button" data-close>Cancel</button></div>
+            </form>
+            <form class="add-form tool" id="tool-pass" hidden>
+              <p class="acct-note">Type Marie's passcode.</p>
+              <input id="pass-in" type="password" autocomplete="current-password" aria-label="Marie's passcode">
+              <div class="add-row"><button class="btn" type="submit">Sign in</button><button class="link" type="button" data-close>Cancel</button></div>
+            </form>
+            <form class="add-form tool" id="tool-setpass" hidden>
+              <p class="acct-note">Choose a passcode for signing in as Marie on GitHub.</p>
+              <input id="sp1" type="password" autocomplete="new-password" placeholder="Passcode" aria-label="New passcode">
+              <input id="sp2" type="password" autocomplete="new-password" placeholder="Type it again" aria-label="Type the passcode again">
+              <div class="add-row"><button class="btn" type="submit">Make lock code</button><button class="link" type="button" data-close>Cancel</button></div>
+              <div class="tool-out" id="sp-out" hidden>
+                <p class="acct-note">Send this lock code to Claude. It can't be turned back into your passcode, so it's safe to share.</p>
+                <textarea id="sp-code" readonly rows="3" aria-label="Lock code"></textarea>
+                <button class="btn" type="button" id="sp-copy">Copy</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -3525,13 +3559,17 @@ $("rel-list").onclick=e=>{const b=e.target.closest("[data-rel]");if(!b)return;cl
 let editing=false, pendingDel=null;
 // "Marie" belongs to the page owner. Only the owner (checked by claude.ai) sees and uses it;
 // everyone else starts as a guest and adds their own name. null = not known yet.
-const OWNER_NAME="Marie";let ownerView=null;
+const OWNER_NAME="Marie";let ownerView=null,verifiedOwner=false;
+// GitHub has no sign-in, so Marie is unlocked with a passcode. PASS is "salt.hash" (PBKDF2-SHA256); the passcode itself is never stored.
+const PASS=""/*PASSCODE*/;
+const unlocked=()=>!!PASS&&store.get("ls-unlock","")===PASS;
 const vis=()=>PROF.list.filter(p=>ownerView!==false||!p.owner);
 function renderPeople(){
   const L=vis(), many=L.length>1, ini=n=>esc([...n.trim()][0]||"?");
   let h=L.map(p=>pendingDel===p.id
     ?`<div class="confirm"><span>Remove ${esc(p.name)} and their lists?</span><div><button class="link danger" type="button" data-del-yes="${p.id}">Remove</button><button class="link" type="button" data-del-no="1">Keep</button></div></div>`
     :`<div class="person"><button type="button" class="prow" data-p="${p.id}" aria-pressed="${p.id===PROF.active}"><span class="av" aria-hidden="true">${ini(p.name)}</span><span class="nm">${esc(p.name)}</span>${p.id===PROF.active?'<span class="tick" aria-hidden="true">✓</span>':""}</button>${many&&!p.owner?`<button type="button" class="chip-x" data-del="${p.id}" aria-label="Remove ${esc(p.name)}" title="Remove">×</button>`:"<span></span>"}</div>`).join("");
+  if(ownerView===false&&PASS&&!vis().some(p=>p.owner))h+=`<div class="person"><button type="button" class="prow" data-signin="1"><span class="av" aria-hidden="true">${esc(OWNER_NAME[0])}</span><span class="nm">${OWNER_NAME}</span><span class="lock">Sign in</span></button><span></span></div>`;
   h+=`<button type="button" class="add-person" id="add-btn"${$("add-form").hidden?"":" hidden"}><span aria-hidden="true">＋</span>Add person</button>`;
   $("acct-av").textContent=[...prof().name.trim()][0]||"?";
   $("acct-btn").setAttribute("aria-label",`Watching as ${prof().name}. Switch person`);$("acct-btn").title=`Watching as ${prof().name}`;
@@ -3546,8 +3584,9 @@ function loadActive(){pages.list=0;pages.seen=0;const p=prof();seen=new Set((p.s
 function switchTo(id){persist();PROF.active=id;store.set("ls-profiles",PROF);loadActive();$("toast").textContent=`Watching as ${prof().name}.`}
 $("people").onclick=e=>{
   const t=e.target.closest("button");if(!t)return;const d=t.dataset;
+  if(d.signin){showTool("tool-pass");$("pass-in").focus();return}
   if(d.p){acctOpen(false);if(d.p!==PROF.active)switchTo(d.p);return}
-  if(t.id==="add-btn"){$("add-form").hidden=false;t.hidden=true;$("add-name").focus();return}
+  if(t.id==="add-btn"){hideTools();$("add-form").hidden=false;t.hidden=true;$("add-name").focus();return}
   if(d.del){pendingDel=d.del;renderPeople();return}
   if(d.delNo){pendingDel=null;renderPeople();return}
   if(d.delYes){if(PROF.list.find(p=>p.id===d.delYes)?.owner)return;const wasActive=PROF.active===d.delYes;PROF.list=PROF.list.filter(p=>p.id!==d.delYes);pendingDel=null;
@@ -3563,7 +3602,7 @@ $("add-form").addEventListener("submit",e=>{e.preventDefault();const name=$("add
 $("add-cancel").onclick=()=>{$("add-form").hidden=true;$("add-name").value="";renderPeople();$("add-btn").focus()};
 // Account menu: opens under the "Watching as" button; closes on outside click or Esc.
 function acctOpen(on){const m=$("acct-menu");if(on===!m.hidden)return;m.hidden=!on;$("acct-btn").setAttribute("aria-expanded",on);
-  if(!on){pendingDel=null;$("add-form").hidden=true;$("add-name").value="";renderPeople()}
+  if(!on){pendingDel=null;$("add-form").hidden=true;$("add-name").value="";hideTools();renderPeople()}
 }
 $("acct-btn").onclick=()=>acctOpen($("acct-menu").hidden);
 document.addEventListener("pointerdown",e=>{if(!$("acct-menu").hidden&&!$("acct").contains(e.target))acctOpen(false)});
@@ -3582,12 +3621,50 @@ function applyOwner(isOwner){
     if(!others.length){const g={id:"p"+Date.now().toString(36),name:"Guest",guest:true,seen:[],saved:[]};L.push(g);others=[g]}
     if(prof().owner)PROF.active=others[0].id;
   }
-  store.set("ls-profiles",PROF);loadActive();
+  store.set("ls-profiles",PROF);loadActive();toolLinks();
   if(!ownerView&&prof().guest){acctOpen(true);$("add-btn").click()}
 }
+// ---- Account tools: move lists between pages, Marie's passcode ----
+const b64e=u=>btoa(String.fromCharCode(...u)), b64d=t=>Uint8Array.from(atob(t),c=>c.charCodeAt(0));
+async function pbk(pw,salt){const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveBits"]);
+  return b64e(new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt,iterations:210000},k,256)))}
+function toolLinks(){$("t-setpass").hidden=!verifiedOwner;$("t-signout").hidden=!(ownerView&&!verifiedOwner&&unlocked())}
+function showTool(id){document.querySelectorAll("#acct-tools .tool").forEach(t=>t.hidden=t.id!==id);
+  $("add-form").hidden=true;if($("add-btn"))$("add-btn").hidden=false}
+function hideTools(){document.querySelectorAll("#acct-tools .tool").forEach(t=>t.hidden=true);$("sp-out").hidden=true;
+  ["imp-code","pass-in","sp1","sp2"].forEach(i=>{$(i).value="";$(i).setCustomValidity("")})}
+$("acct-tools").addEventListener("click",e=>{if(e.target.closest("[data-close]"))hideTools()});
+function bad(el,msg){el.setCustomValidity(msg);el.reportValidity();el.addEventListener("input",()=>el.setCustomValidity(""),{once:true})}
+async function copyFrom(ta,btn){ta.focus();ta.select();let ok=false;try{await navigator.clipboard.writeText(ta.value);ok=true}catch(e){try{ok=document.execCommand("copy")}catch(e2){}}
+  btn.textContent=ok?"Copied ✓":"Select and copy";setTimeout(()=>btn.textContent="Copy",1800)}
+$("t-export").onclick=()=>{const p=prof();persist();
+  $("exp-code").value="LSBO1:"+btoa(unescape(encodeURIComponent(JSON.stringify({n:p.name,s:[...seen],l:saved}))));
+  $("exp-who").textContent=p.name;showTool("tool-export");$("exp-code").select()};
+$("exp-copy").onclick=()=>copyFrom($("exp-code"),$("exp-copy"));
+$("t-import").onclick=()=>{$("imp-who").textContent=prof().name;showTool("tool-import");$("imp-code").focus()};
+$("tool-import").addEventListener("submit",e=>{e.preventDefault();const f=$("imp-code");let d;
+  try{const t=f.value.trim();if(!t.startsWith("LSBO1:"))throw 0;d=JSON.parse(decodeURIComponent(escape(atob(t.slice(6)))));if(!Array.isArray(d.s)||!Array.isArray(d.l))throw 0}
+  catch(err){bad(f,"That doesn't look like a lists code. Copy it again from \"Copy my lists\".");return}
+  const S=d.s.filter(valid),L=d.l.filter(valid);let a=0;
+  S.forEach(id=>{if(!seen.has(id)){seen.add(id);a++}});
+  const keep=new Set(saved);L.forEach(id=>{if(!keep.has(id)&&!seen.has(id)){saved.unshift(id);keep.add(id);a++}});
+  saved=saved.filter(id=>!seen.has(id));persist();hideTools();acctOpen(false);
+  pages.list=0;pages.seen=0;renderList();rank();shuffle();render(true);
+  $("toast").textContent=a?`Added ${a} title${a>1?"s":""} to ${prof().name}'s lists.`:"Those lists were already here."});
+$("tool-pass").addEventListener("submit",async e=>{e.preventDefault();const f=$("pass-in");if(!PASS||!f.value)return;
+  const [salt,hash]=PASS.split(".");if(await pbk(f.value,b64d(salt))!==hash){bad(f,"Wrong passcode.");return}
+  store.set("ls-unlock",PASS);hideTools();acctOpen(false);applyOwner(true);$("toast").textContent=`Signed in as ${OWNER_NAME}.`});
+$("t-signout").onclick=()=>{try{localStorage.removeItem("ls-unlock")}catch(e){}hideTools();acctOpen(false);applyOwner(false);acctOpen(false);$("toast").textContent="Signed out."};
+$("t-setpass").onclick=()=>{showTool("tool-setpass");$("sp-out").hidden=true;$("sp1").focus()};
+$("tool-setpass").addEventListener("submit",async e=>{e.preventDefault();const a=$("sp1"),b=$("sp2");
+  if(a.value.length<4){bad(a,"Use at least 4 characters.");return}
+  if(a.value!==b.value){bad(b,"The two passcodes don't match.");return}
+  const salt=crypto.getRandomValues(new Uint8Array(16));$("sp-code").value=b64e(salt)+"."+await pbk(a.value,salt);
+  a.value="";b.value="";$("sp-out").hidden=false;$("sp-code").select()});
+$("sp-copy").onclick=()=>copyFrom($("sp-code"),$("sp-copy"));
 // GitHub or a plain file: no claude.ai sign-in, so nobody can be the owner.
-if(!window.claude?.use)applyOwner(false);
-else claude.use("user").then(u=>u?u.isOwner():false).then(applyOwner,()=>applyOwner(false));
+if(!window.claude?.use)applyOwner(unlocked());
+else claude.use("user").then(u=>u?u.isOwner():false).then(o=>{verifiedOwner=!!o;applyOwner(o||unlocked())},()=>applyOwner(unlocked()));
 
 $("q").placeholder=`Search ${P.length.toLocaleString("en-US")} titles or directors`;
 // Every visit deals a fresh shuffled ticket (and "Also playing"), skipping titles shown on recent visits.

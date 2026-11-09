@@ -2,7 +2,7 @@
 
 **What should I watch tonight?** Set your mood on a mixing desk, and the box office prints you **one ticket**: one movie or TV series, with its poster, a one-line description and how well it matches.
 
-[▶ Open the tool](https://marie-6.github.io/hello-world/week8-tool/) · [Process record with before/after pictures](PROCESS.md) · [All 68 prompts](PROMPTS.md) · [Full chat history](CHAT_HISTORY.md)
+[▶ Open the tool](https://marie-6.github.io/hello-world/week8-tool/) · [Process record with before/after pictures](PROCESS.md) · [All 70 prompts](PROMPTS.md) · [Full chat history](CHAT_HISTORY.md)
 
 <img src="images/after-whole-page.png" width="700">
 
@@ -23,4 +23,10 @@
 | Saved data | Your lists stay in your own browser (nothing is sent anywhere). |
 | Made with | Claude (Claude Code), Nov 3–9, 2026. Data from IMDb, Wikidata, TVMaze and Wikipedia. |
 
-**About "Marie":** on claude.ai, the profile "Marie" is locked to me as the page owner. Here on GitHub there is no sign-in, so everyone starts as a Guest and adds their own name.
+## Signing in as Marie and moving lists
+
+Your lists are saved in your own browser, separately for each website. So the claude.ai page and this GitHub page don't share them.
+
+- **Move lists between pages:** open the circle menu, press **Copy my lists**, then on the other page press **Paste lists** and paste the code. The titles are added to whoever is signed in there.
+- **Marie:** on claude.ai, only the page owner can use "Marie". On GitHub, choose **Marie → Sign in** and type the passcode. **Sign out** is in the same menu.
+- **The passcode** is never stored in this page. The page only keeps a scrambled "lock code" made from it, so the passcode can't be read from the code. It still only keeps out casual visitors: this is a public page with no real accounts.
